@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>sipbuu • 404 • lost in deep space</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="404 — lost in deep space. the page you were looking for drifted off. try a different portal."
+  />
+
+  <meta property="og:site_name" content="sipbuu.me" />
+  <meta property="og:title" content="sipbuu • 404 • lost in deep space" />
+  <meta
+    property="og:description"
+    content="fun, neon, dark-mode error page with interactive toys that warp you back to the main site."
+  />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sipbuu.me/404.html" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="/styles.css" />
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+    defer
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/dist/typed.min.js"
+    defer
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"
+    defer
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"
+    defer
+  ></script>
+
+  <script src="/script.js" defer></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="page-shell page-shell-404">
+    <main class="main main-404">
+      <section class="section section-404">
+        <section class="glass-panel error-main tilt-card" data-tilt>
+          <p class="error-label">404 • page not found</p>
+
+          <div class="error-code-wrap">
+            <span class="error-code">4</span>
+            <span class="error-code error-code-glitch">0</span>
+            <span class="error-code">4</span>
+          </div>
+
+          <h1 class="error-title">whooops...</h1>
+          <p class="error-subtitle">
+            the url you tried going to doesn’t exist anymore, or maybe it did you were just too late.
+            either way, you’ve drifted off the main pages.
+          </p>
+
+          <div class="error-actions">
+            <a href="/" class="btn btn-primary">back to home</a>
+            <a href="/projects/index.html" class="btn btn-ghost">
+              projects
+            </a>
+            <a href="/blog/index.html" class="btn btn-ghost">
+              blog
+            </a>
+          </div>
+
+          <p class="error-small-hint">
+            pro tip: press <span class="accent">H</span> on your keyboard to instantly warp home.
+          </p>
+        </section>
+
+        <div class="error-grid">
+          <section class="glass-panel error-toy tilt-card" data-tilt>
+            <h2 class="error-toy-title">signal tuner</h2>
+            <p class="error-toy-sub">
+              drag the slider to stabilize the signal. certain frequencies uncover
+              extra messages from the void.
+            </p>
+
+            <div class="toy-meter">
+              <div class="toy-meter-bar" id="toy-meter-bar">
+                <div class="toy-meter-fill" id="toy-meter-fill"></div>
+              </div>
+              <div class="toy-meter-labels">
+                <span>0%</span>
+                <span>50%</span>
+                <span>100%</span>
+              </div>
+            </div>
+
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value="12"
+              class="toy-slider"
+              id="signal-slider"
+            />
+
+            <div class="toy-readout">
+              <div class="toy-readout-row">
+                <span class="console-label">frequency</span>
+                <span class="console-value" id="signal-reading">12.0 mhz</span>
+              </div>
+              <div class="toy-readout-row">
+                <span class="console-label">diagnostic</span>
+                <span class="console-value" id="signal-state">
+                  low signal · static and little neon crumbs
+                </span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer footer-404">
+      <div class="footer-inner glass-panel">
+        <div class="footer-left">
+          <span class="footer-orb"></span>
+          <span class="footer-text">
+            welcome to the 404 void....
+          </span>
+        </div>
+        <div class="footer-links">
+          <a href="/">home</a>
+          <a href="/projects/index.html">projects</a>
+          <a href="/blog/index.html">blog</a>
+        </div>
+        <p class="footer-copy">
+          © <span id="year"></span> sipbuu.
+        </p>
+      </div>
+    </footer>
+  </div>
+
+  <!-- 404-specific interactivity -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // === portal scanner ===
+      const statusEl = document.getElementById("portal-status");
+      const labelEl = document.getElementById("portal-label");
+      const linkEl = document.getElementById("portal-link");
+      const scanBtn = document.getElementById("portal-scan");
+      const randomBtn = document.getElementById("portal-random");
+
+      const portals = [
+        {
+          label: "home base",
+          href: "/",
+          status: "stable · recommended"
+        },
+        {
+          label: "projects grid",
+          href: "/projects/index.html",
+          status: "stable · lots of builds"
+        },
+        {
+          label: "blog / ramble zone",
+          href: "/blog/index.html",
+          status: "mildly chaotic · readable"
+        },
+        {
+          label: "cbhs minecraft hub",
+          href: "https://cbhs.online/",
+          status: "external · minecraft warp"
+        }
+      ];
+
+      function pickPortal() {
+        if (!portals.length) return;
+        const choice = portals[Math.floor(Math.random() * portals.length)];
+        labelEl.textContent = choice.label;
+        linkEl.textContent = choice.href.replace(/^https?:\/\//, "");
+        linkEl.href = choice.href;
+        statusEl.textContent = choice.status;
+
+        linkEl.classList.remove("console-link-pulse");
+        void linkEl.offsetWidth; // restart animation
+        linkEl.classList.add("console-link-pulse");
+      }
+
+      if (scanBtn) {
+        scanBtn.addEventListener("click", () => {
+          statusEl.textContent = "scanning… looking for a safe portal";
+          setTimeout(pickPortal, 220);
+        });
+      }
+
+      if (randomBtn) {
+        randomBtn.addEventListener("click", pickPortal);
+      }
+
+      // keyboard shortcut: H = home
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "h" || e.key === "H") {
+          window.location.href = "/";
+        }
+      });
+
+      // === signal tuner toy ===
+      const slider = document.getElementById("signal-slider");
+      const readingEl = document.getElementById("signal-reading");
+      const stateEl = document.getElementById("signal-state");
+      const barFill = document.getElementById("toy-meter-fill");
+
+      function updateSignal() {
+        const value = Number(slider.value || 0);
+        readingEl.textContent = value.toFixed(1) + " mhz";
+        barFill.style.width = value + "%";
+
+        let state;
+        if (value < 15) {
+          state = "low signal · static and little neon crumbs";
+        } else if (value < 35) {
+          state = "ok-ish · faint echoes of the homepage";
+        } else if (value >= 42 && value <= 46) {
+          state = "nice · secret warp window unlocked (try the portals above 👀)";
+        } else if (value < 65) {
+          state = "stable · background particles synced";
+        } else if (value >= 72 && value <= 76) {
+          state = "perfect lock · universe briefly hums in tune with your mouse.";
+        } else if (value < 90) {
+          state = "strong signal · probably safe, probably.";
+        } else {
+          state = "maxed out · please stop yelling at the antenna.";
+        }
+        stateEl.textContent = state;
+      }
+
+      if (slider) {
+        updateSignal();
+        slider.addEventListener("input", updateSignal);
+      }
+
+      // === gsap entrance just for this page ===
+      if (typeof gsap !== "undefined") {
+        const tl404 = gsap.timeline({
+          defaults: {
+            duration: 0.9,
+            ease: "power3.out"
+          }
+        });
+
+        const mainCard = document.querySelector(".error-main");
+        const lowerCards = document.querySelectorAll(".error-grid > .glass-panel");
+
+        if (mainCard) {
+          tl404.from(mainCard, {
+            y: 40,
+            opacity: 0,
+            scale: 0.96
+          });
+        }
+
+        if (lowerCards.length) {
+          tl404.from(
+            lowerCards,
+            {
+              y: 30,
+              opacity: 0,
+              stagger: 0.12
+            },
+            "-=0.4"
+          );
+        }
+      }
+    });
+  </script>
+</body>
+</html>
