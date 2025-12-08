@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>sipbuu • spotify lyric thing</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="spotify now-playing viewer with neon synced lyrics powered by LRCLIB."
+  />
+
+  <meta property="og:site_name" content="sipbuu.me" />
+  <meta property="og:title" content="sipbuu • spotify lyric sync" />
+  <meta
+    property="og:description"
+    content="see your current spotify track with synced lyrics in deep dark mode."
+  />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sipbuu.me/spotify/" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <!-- absolute paths because this page is in /spotify/ -->
+  <link rel="stylesheet" href="/styles.css" />
+
+  <!-- same libs as main site -->
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+    defer
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/dist/typed.min.js"
+    defer
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"
+    defer
+  ></script>
+  <script
+    src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"
+    defer
+  ></script>
+
+  <script src="/script.js" defer></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="page-shell">
+    <header class="nav-shell">
+      <nav class="nav-island">
+        <a href="/" class="brand">
+          <span class="brand-orb"></span>
+          <span class="brand-text">sipbuu</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link">home</a></li>
+          <li><a href="/projects/index.html" class="nav-link">projects</a></li>
+          <li><a href="/blog/index.html" class="nav-link">blog</a></li>
+          <li><a href="/spotify/" class="nav-link nav-link-active">spotify</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="main spotify-main" data-spotify-root>
+      <section class="section spotify-section">
+        <section class="glass-panel spotify-header tilt-card" data-tilt>
+          <div class="spotify-header-main">
+            <div class="spotify-orb">
+              <span class="spotify-orb-icon">♪</span>
+            </div>
+            <div class="spotify-header-text">
+              <h1 class="spotify-title">spotify lyric thing</h1>
+              <p class="spotify-subtitle">
+                connect your spotify account, and i’ll try to grab the track you’re currently
+                playing and line-synced lyrics from <span class="accent">LRCLIB</span>.
+              </p>
+            </div>
+          </div>
+
+          <div class="spotify-header-actions">
+            <button type="button" class="btn btn-primary" id="spotify-connect">
+              connect spotify
+            </button>
+            <button type="button" class="btn btn-ghost" id="spotify-disconnect">
+              disconnect
+            </button>
+          </div>
+
+          <p class="spotify-status" id="spotify-status">
+            not connected yet. you’ll be redirected to spotify to approve access.
+          </p>
+        </section>
+
+        <div class="spotify-layout">
+          <section class="glass-panel spotify-now tilt-card" data-tilt>
+            <div class="spotify-track-meta">
+              <div class="spotify-cover-wrap">
+                <div class="spotify-cover-inner">
+                  <div class="spotify-cover-skeleton" id="spotify-cover-skeleton"></div>
+                  <img
+                    src=""
+                    alt="album cover"
+                    class="spotify-cover"
+                    id="spotify-track-cover"
+                  />
+                  <div class="spotify-cover-glow"></div>
+                </div>
+              </div>
+              <div class="spotify-track-text">
+                <h2 class="spotify-track-title" id="spotify-track-title">
+                  no track playing
+                </h2>
+                <p class="spotify-track-artist" id="spotify-track-artist">
+                  connect spotify & start playing something on any device.
+                </p>
+                <p class="spotify-track-album" id="spotify-track-album">—</p>
+                <a
+                  href="#"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="spotify-open-link"
+                  id="spotify-track-link"
+                >
+                  open in spotify ↗
+                </a>
+              </div>
+            </div>
+
+            <div class="spotify-progress">
+              <div class="spotify-progress-bar">
+                <div
+                  class="spotify-progress-bar-fill"
+                  id="spotify-progress-bar-fill"
+                ></div>
+              </div>
+              <div class="spotify-progress-meta">
+                <span class="spotify-progress-time" id="spotify-progress-label">
+                  0:00 / 0:00
+                </span>
+                <span class="spotify-progress-state" id="spotify-playback-state">
+                  idle
+                </span>
+              </div>
+            </div>
+
+            <p class="spotify-note">
+              this uses the <span class="accent">spotify web api</span> to poll your
+              current playback and LRCLIB for synced lyrics.
+            </p>
+          </section>
+
+          <section class="glass-panel spotify-lyrics tilt-card" data-tilt>
+            <div class="spotify-lyrics-header">
+              <h2 class="spotify-lyrics-title">lyrics</h2>
+              <p class="spotify-lyrics-note" id="lyrics-note">
+                synced, scrolling lyrics will show up here when available. we fall back
+                to plain text if there’s no timing data.
+              </p>
+            </div>
+
+            <div class="spotify-lyrics-scroll" id="lyrics-scroll">
+              <div class="lyrics-lines" id="lyrics-lines">
+              </div>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner glass-panel">
+        <div class="footer-left">
+          <span class="footer-orb"></span>
+          <span class="footer-text">
+            built by sip · spotify + lrclib frankenstein moment.
+          </span>
+        </div>
+        <div class="footer-links">
+          <a href="/">home</a>
+          <a href="/projects/index.html">projects</a>
+          <a href="/blog/index.html">blog</a>
+        </div>
+        <p class="footer-copy">
+          © <span id="year"></span> sipbuu.
+        </p>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
