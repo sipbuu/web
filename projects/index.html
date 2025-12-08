@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>sipbuu • projects</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="sipbuu projects — web toys, music tools, minecraft chaos, and other experiments."
+  />
+
+  <meta property="og:site_name" content="sipbuu.me" />
+  <meta property="og:title" content="sipbuu • projects & experiments" />
+  <meta
+    property="og:description"
+    content="dark-mode neon hub for web stuff, music projects, and minecraft experiments."
+  />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sipbuu.me/projects/" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="/styles.css" />
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+    defer
+  ></script>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/dist/typed.min.js"
+    defer
+  ></script>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"
+    defer
+  ></script>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"
+    defer
+  ></script>
+
+  <script src="/script.js" defer></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="page-shell">
+    <header class="nav-shell">
+      <nav class="nav-island">
+        <a href="/" class="brand">
+          <span class="brand-orb"></span>
+          <span class="brand-text">sipbuu</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link">home</a></li>
+          <li><a href="/#bento" class="nav-link">overview</a></li>
+          <li><a href="/#about" class="nav-link">about</a></li>
+          <li><a href="/projects/index.html" class="nav-link nav-link--active">projects</a></li>
+          <li><a href="/blog/index.html" class="nav-link">blog</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="main projects-main">
+      <section class="projects-section" data-projects-root>
+        <header class="projects-header">
+          <span class="projects-eyebrow">projects</span>
+          <h1 class="projects-title">projects & experiments</h1>
+          <p class="projects-subtitle">
+            all the stuff i've worked on..
+          </p>
+        </header>
+
+        <div class="projects-layout">
+          <section class="projects-panel glass-panel">
+            <div class="projects-panel-header">
+              <h2>all the stuff</h2>
+              <p>filter by pills, makes it easier to sort lol</p>
+            </div>
+
+            <div class="projects-filters">
+              <button
+                class="projects-filter projects-filter--active"
+                type="button"
+                data-project-filter="all"
+              >
+                all
+              </button>
+              <button
+                class="projects-filter"
+                type="button"
+                data-project-filter="web"
+              >
+                web
+              </button>
+              <button
+                class="projects-filter"
+                type="button"
+                data-project-filter="music"
+              >
+                music
+              </button>
+              <button
+                class="projects-filter"
+                type="button"
+                data-project-filter="minecraft"
+              >
+                minecraft
+              </button>
+              <button
+                class="projects-filter"
+                type="button"
+                data-project-filter="misc"
+              >
+                misc
+              </button>
+            </div>
+
+            <div class="projects-grid" data-projects-grid>
+              <p class="projects-loading" data-projects-loading>
+                loading projects…
+              </p>
+            </div>
+          </section>
+
+          <aside class="projects-sidebar">
+            <div class="projects-sidebar-panel glass-panel">
+              <h2>currently tinkering with</h2>
+              <p class="projects-sidebar-sub">
+              </p>
+              <ul class="projects-list">
+                <li>polishing ui</li>
+                <li>possibly watching youtube videos...</li>
+                <li>messing with random stuff</li>
+                <li>...</li>
+              </ul>
+            </div>
+
+            <div class="projects-sidebar-panel glass-panel">
+              <h3>stack / toolbox</h3>
+              <p class="projects-sidebar-sub">
+                the usual languages and libraries i use (and some extras)
+              </p>
+              <div class="projects-stack-tags">
+                <span>java</span>
+                <span>c++</span>
+                <span>python</span>
+                <span>html</span>
+                <span>css</span>
+                <span>javascript</span>
+                <span>gsap</span>
+                <span>particles.js</span>
+                <span>vanilla-tilt</span>
+                <span>json apis</span>
+                <span>fl studio</span>
+                <span>minecraft servers</span>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner glass-panel">
+        <div class="footer-left">
+          <span class="footer-orb"></span>
+          <span class="footer-text">none of these have a deadline, but yknow they're cool.</span>
+        </div>
+        <div class="footer-links">
+          <a href="/projects/index.html">projects</a>
+          <a href="/blog/index.html">blog</a>
+          <a href="/">home</a>
+        </div>
+        <p class="footer-copy">
+          © <span id="year"></span> sipbuu.
+        </p>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
