@@ -1,0 +1,44 @@
+{
+  "projects": [
+    {
+      "id": "music",
+      "title": "music",
+      "label": "music",
+      "description": "tracks i've made and stuff, hosted on bandcamp for now.",
+      "tags": ["music", "misc"],
+      "tech": ["fl studio", "midi", "sound design"],
+      "status": "ongoing",
+      "statusLabel": "always in progress",
+      "url": "https://sipbuu.bandcamp.com",
+      "urlLabel": "bandcamp placeholder",
+      "external": true
+    },
+    {
+      "id": "website",
+      "anchorId": "website",
+      "title": "sipbuu.me",
+      "label": "website",
+      "description": "the page you’re on.. just to keep everything together and orderly. (2nd version of the site!)",
+      "tags": ["web", "misc"],
+      "tech": ["html", "css", "vanilla js", "gsap", "particles.js"],
+      "status": "live",
+      "statusLabel": "live",
+      "url": "/",
+      "urlLabel": "open homepage",
+      "external": false
+    },
+    {
+      "id": "currently-listening",
+      "anchorId": "spotify",
+      "title": "currenty listening w/ lyric sync",
+      "label": "music",
+      "description": "shows spotify current listening w synced lyrics using lrclib",
+      "tags": ["web", "music"],
+      "tech": ["javascript", "lrclib", "html"],
+      "status": "in progress",
+      "statusLabel": "status: in progress",
+      "url": "",
+      "external": false
+    }
+  ]
+}
