@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>sipbuu • blog </title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta
+    name="description"
+    content="sipbuu blog — dev logs, music thoughts, minecraft chaos notes, and random rambles."
+  />
+
+  <meta property="og:site_name" content="sipbuu.me" />
+  <meta property="og:title" content="sipbuu • blog" />
+  <meta
+    property="og:description"
+    content="dark-mode, neon ramble zone for posts, devlogs, and other brain dump stuff."
+  />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://sipbuu.me/blog/" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="/styles.css" />
+
+  <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
+    defer
+  ></script>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/typed.js@2.0.12/dist/typed.min.js"
+    defer
+  ></script>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.8.1/dist/vanilla-tilt.min.js"
+    defer
+  ></script>
+
+  <script
+    src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"
+    defer
+  ></script>
+
+  <script src="/script.js" defer></script>
+</head>
+<body>
+  <div id="particles-js"></div>
+
+  <div class="page-shell">
+    <header class="nav-shell">
+      <nav class="nav-island">
+        <a href="/" class="brand">
+          <span class="brand-orb"></span>
+          <span class="brand-text">sipbuu<span class="brand-dot"></span></span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="/" class="nav-link">home</a></li>
+          <li><a href="/#bento" class="nav-link">overview</a></li>
+          <li><a href="/#about" class="nav-link">about</a></li>
+          <li><a href="/projects/index.html" class="nav-link">projects</a></li>
+          <li><a href="/blog/index.html" class="nav-link nav-link--active">blog</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="main blog-main">
+      <section class="blog-section" data-blog-root>
+        <header class="blog-header">
+          <span class="blog-eyebrow">blog</span>
+          <h1 class="blog-title">blog</h1>
+          <p class="blog-subtitle">
+            just logs about whatever’s on my mind..
+          </p>
+        </header>
+
+        <div class="blog-layout">
+          <section class="blog-list glass-panel">
+            <div class="blog-list-header">
+              <h2>entries</h2>
+              <p>latest first</p>
+            </div>
+            <div class="blog-list-body" data-blog-list>
+              <p class="blog-loading">loading posts…</p>
+            </div>
+          </section>
+
+          <aside class="blog-sidebar">
+            <div class="blog-sidebar-panel glass-panel">
+              <h2>history</h2>
+              <p class="blog-history-sub">
+                grouped by year · good for future nostalgia scrolling.
+              </p>
+              <ul class="blog-timeline" data-blog-timeline>
+              </ul>
+            </div>
+
+          </aside>
+        </div>
+      </section>
+    </main>
+
+    <div class="blog-modal-backdrop" data-blog-modal hidden>
+      <div class="blog-modal glass-panel" role="dialog" aria-modal="true" aria-labelledby="blogModalTitle">
+        <button class="blog-modal-close" type="button" data-blog-modal-close aria-label="Close post">
+          ✕
+        </button>
+        <header class="blog-modal-header">
+          <p class="blog-modal-date" data-blog-modal-date></p>
+          <h2 class="blog-modal-title" id="blogModalTitle" data-blog-modal-title></h2>
+          <div class="blog-modal-tags" data-blog-modal-tags></div>
+        </header>
+        <div class="blog-modal-image-wrapper" data-blog-modal-image-wrapper></div>
+        <div class="blog-modal-body" data-blog-modal-body>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <div class="footer-inner glass-panel">
+        <div class="footer-left">
+          <span class="footer-orb"></span>
+          <span class="footer-text">do not take anything i say in blogs serious...</span>
+        </div>
+        <div class="footer-links">
+          <a href="/projects/index.html">projects</a>
+          <a href="/blog/index.html">blog</a>
+          <a href="/">home</a>
+        </div>
+        <p class="footer-copy">
+          © <span id="year"></span> sipbuu. all rights reserved.
+        </p>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
