@@ -25,8 +25,36 @@
     rel="stylesheet"
   />
 
-  <!-- absolute paths because this page is in /spotify/ -->
-  <link rel="stylesheet" href="/styles.css" />
+  <script>
+  (function () {
+    // Stored version 
+    const localVersion = localStorage.getItem("assetVersion");
+
+    // Fallback version
+    const FALLBACK = "dev-1";
+
+    window.__ASSET_VERSION__ = localVersion || FALLBACK;
+
+    function versionUrl(url, id) {
+      const hasQuery = url.includes("?");
+      const tag = `v=${id}`;
+      return hasQuery ? `${url}&${tag}` : `${url}?${tag}`;
+    }
+
+    // --- Load CSS ----------------------------------------------
+    const css = document.createElement("link");
+    css.rel = "stylesheet";
+    css.href = versionUrl("/styles.css", window.__ASSET_VERSION__);
+    document.head.appendChild(css);
+
+    // --- Load JS (DEFER!) --------------------------------------
+    const js = document.createElement("script");
+    js.defer = true;
+    js.src = versionUrl("/script.js", window.__ASSET_VERSION__);
+    document.head.appendChild(js);
+  })();
+</script>
+
 
   <!-- same libs as main site -->
   <script
@@ -46,7 +74,7 @@
     defer
   ></script>
 
-  <script src="/script.js" defer></script>
+  
 </head>
 <body>
   <div id="particles-js"></div>
