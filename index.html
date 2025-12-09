@@ -29,7 +29,37 @@
     rel="stylesheet"
   />
 
-  <link rel="stylesheet" href="styles.css" />
+<script>
+  (function () {
+    // Stored version
+    const localVersion = localStorage.getItem("assetVersion");
+
+    // Fallback version
+    const FALLBACK = "dev-1";
+
+    window.__ASSET_VERSION__ = localVersion || FALLBACK;
+
+    function versionUrl(url, id) {
+      const hasQuery = url.includes("?");
+      const tag = `v=${id}`;
+      return hasQuery ? `${url}&${tag}` : `${url}?${tag}`;
+    }
+
+    // --- Load CSS ----------------------------------------------
+    const css = document.createElement("link");
+    css.rel = "stylesheet";
+    css.href = versionUrl("/styles.css", window.__ASSET_VERSION__);
+    document.head.appendChild(css);
+
+    // --- Load JS (DEFER!) --------------------------------------
+    const js = document.createElement("script");
+    js.defer = true;
+    js.src = versionUrl("/script.js", window.__ASSET_VERSION__);
+    document.head.appendChild(js);
+  })();
+</script>
+
+
 
   <script
     src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"
@@ -324,3 +354,4 @@
   </div>
 </body>
 </html>
+
