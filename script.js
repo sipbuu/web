@@ -1,23 +1,23 @@
-(function () {
-  const current = window.__ASSET_VERSION__ || "unknown";
+//(function () {
+  //const current = window.__ASSET_VERSION__ || "unknown";
 
-  fetch("/res/version.json?nc=" + Date.now())
-    .then(res => res.json())
-    .then(data => {
-      if (!data.assetVersion) return;
+  //fetch("/res/version.json?nc=" + Date.now())
+   // .then(res => res.json())
+    //.then(data => {
+      //if (!data.assetVersion) return;
 
-      const latest = String(data.assetVersion);
+      //const latest = String(data.assetVersion);
 
-      if (latest !== current) {
-        console.log("%c[assets]", "color:#15f4ff", "New version detected → refreshing…");
-        localStorage.setItem("assetVersion", latest);
+      ///if (latest !== current) {
+        //console.log("%c[assets]", "color:#15f4ff", "New version detected → refreshing…");
+        //localStorage.setItem("assetVersion", latest);
 
         // Reload so the new ?v=HASH is used
-        window.location.reload();
-      }
-    })
-    .catch(err => console.warn("[assets] version check failed:", err));
-})();
+        //window.location.reload();
+      //}
+    //})
+    //.catch(err => console.warn("[assets] version check failed:", err));
+//})();
 
 document.addEventListener("DOMContentLoaded", () => {
   initYear();
