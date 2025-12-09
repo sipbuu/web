@@ -724,7 +724,7 @@ function escapeHtml(str) {
 const SPOTIFY_CLIENT_ID = "e0b6c49d7f49401593932b51dc4cbe6b";
 const SPOTIFY_SCOPES = "user-read-playback-state user-read-currently-playing";
 const SPOTIFY_REDIRECT_URI = "https://sipbuu.me/spotify/"; // must match dashboard exactly
-
+const SPOTIFY_POLL_INTERVAL_MS = 5000; // 5s instead of 1200ms
 const SPOTIFY_TOKEN_KEY = "spotify_access_token";
 const SPOTIFY_REFRESH_TOKEN_KEY = "spotify_refresh_token";
 const SPOTIFY_TOKEN_EXPIRES_KEY = "spotify_token_expires_at";
@@ -1038,38 +1038,105 @@ async function fetchSpotifyCurrentlyPlaying() {
   return data;
 }
 
-async function fetchLyricsForTrack(trackName, artistName, durationMs) {
-  if (!trackName || !artistName) return null;
+async function fetchLyricsForTrack(trackName, artistName, albumName, durationMs) {
+  if (!trackName || !artistName || !durationMs) return null;
+
+  const durationSec = Math.round(durationMs / 1000);
+  const params = new URLSearchParams({
+    track_name: trackName,
+    artist_name: artistName,
+    album_name: albumName || "",
+    duration: String(durationSec)
+  });
+
+  // helper to try /api/get-cached and /api/get
+  async function trySignatureEndpoint(path) {
+    const url = `https://lrclib.net/api/${path}?${params.toString()}`;
+    const res = await fetch(url);
+    if (res.status === 404) return null;
+    if (!res.ok) {
+      console.warn("lrclib", path, "error", res.status, await res.text());
+      return null;
+    }
+    return res.json();
+  }
+
+  // 1) Fast path: only internal database
+  let data = await trySignatureEndpoint("get-cached");
+  if (data && (data.syncedLyrics || data.plainLyrics)) {
+    return data;
+  }
+
+  // 2) Slow path: allow LRCLIB to hit external sources if needed
+  data = await trySignatureEndpoint("get");
+  if (data && (data.syncedLyrics || data.plainLyrics)) {
+    return data;
+  }
+
+  // 3) Fallback: search, prefer synced lyrics + duration match
   try {
-    const query = encodeURIComponent(`${trackName} ${artistName}`);
-    const searchUrl = `https://lrclib.net/api/search?q=${query}`;
-    const searchRes = await fetch(searchUrl);
-    if (!searchRes.ok) {
-      console.warn("lrclib search error", await searchRes.text());
-      return null;
-    }
-    const results = await searchRes.json();
-    if (!Array.isArray(results) || !results.length) {
-      return null;
-    }
-
-    const candidate = results[0];
-    if (!candidate || typeof candidate.id === "undefined") {
+    const searchParams = new URLSearchParams({
+      track_name: trackName,
+      artist_name: artistName
+    });
+    const searchUrl = `https://lrclib.net/api/search?${searchParams.toString()}`;
+    const res = await fetch(searchUrl);
+    if (!res.ok) {
+      console.warn("lrclib search error", await res.text());
       return null;
     }
 
-    const getRes = await fetch(`https://lrclib.net/api/get/${candidate.id}`);
-    if (!getRes.ok) {
-      console.warn("lrclib get error", await getRes.text());
-      return null;
+    const results = await res.json();
+    if (!Array.isArray(results) || !results.length) return null;
+
+    const durationTolerance = 2; // seconds
+    const durationMatched = results.filter(
+      (r) =>
+        typeof r.duration === "number" &&
+        Math.abs(r.duration - durationSec) <= durationTolerance
+    );
+
+    const candidates = (durationMatched.length ? durationMatched : results).slice();
+
+    // sort: prefer syncedLyrics, then closest duration
+    candidates.sort((a, b) => {
+      const aHasSync = !!a.syncedLyrics;
+      const bHasSync = !!b.syncedLyrics;
+      if (aHasSync !== bHasSync) return aHasSync ? -1 : 1;
+
+      const da =
+        typeof a.duration === "number"
+          ? Math.abs(a.duration - durationSec)
+          : 9999;
+      const db =
+        typeof b.duration === "number"
+          ? Math.abs(b.duration - durationSec)
+          : 9999;
+      return da - db;
+    });
+
+    const best = candidates[0];
+    if (!best) return null;
+
+    // if the search result already has lyrics, just use it
+    if (best.syncedLyrics || best.plainLyrics) {
+      return best;
     }
-    const trackData = await getRes.json();
-    return trackData;
+
+    // otherwise, fetch full record by ID
+    if (typeof best.id !== "undefined") {
+      const byIdRes = await fetch(`https://lrclib.net/api/get/${best.id}`);
+      if (!byIdRes.ok) return null;
+      return await byIdRes.json();
+    }
+
+    return null;
   } catch (err) {
-    console.error("lrclib error", err);
+    console.error("lrclib search fallback error", err);
     return null;
   }
 }
+
 
 function parseSyncedLyrics(lrc) {
   if (!lrc || typeof lrc !== "string") return [];
@@ -1284,12 +1351,15 @@ async function spotifyPollTick() {
     const artistName = Array.isArray(item.artists)
       ? item.artists.map((a) => a.name).join(", ")
       : "";
-
+    const albumName = item.album && item.album.name ? item.album.name : "";
+    
     const lyricPayload = await fetchLyricsForTrack(
       trackName,
       artistName,
+      albumName,
       durationMs
     );
+
 
     if (!lyricPayload) {
       spotifyCurrentLyrics = [];
@@ -1322,8 +1392,8 @@ async function spotifyPollTick() {
 
 function startSpotifyPolling() {
   if (spotifyPollIntervalId) clearInterval(spotifyPollIntervalId);
-  spotifyPollIntervalId = setInterval(spotifyPollTick, 1200);
-  spotifyPollTick();
+  spotifyPollIntervalId = setInterval(spotifyPollTick, SPOTIFY_POLL_INTERVAL_MS);
+  spotifyPollTick(); // initial call
 }
 
 /* --- page bootstrap --- */
@@ -1380,4 +1450,5 @@ async function initSpotifyPage() {
     });
   }
 }
+
 
