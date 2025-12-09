@@ -724,7 +724,7 @@ function escapeHtml(str) {
 const SPOTIFY_CLIENT_ID = "e0b6c49d7f49401593932b51dc4cbe6b";
 const SPOTIFY_SCOPES = "user-read-playback-state user-read-currently-playing";
 const SPOTIFY_REDIRECT_URI = "https://sipbuu.me/spotify/"; // must match dashboard exactly
-const SPOTIFY_POLL_INTERVAL_MS = 5000; // 5s instead of 1200ms
+const SPOTIFY_POLL_INTERVAL_MS = 1200; // 5s instead of 1200ms
 const SPOTIFY_TOKEN_KEY = "spotify_access_token";
 const SPOTIFY_REFRESH_TOKEN_KEY = "spotify_refresh_token";
 const SPOTIFY_TOKEN_EXPIRES_KEY = "spotify_token_expires_at";
