@@ -1,50 +1,21 @@
 {
   "posts": [
     {
-      "id": "first-devlog",
-      "title": "first little dev log",
-      "date": "2025-01-03",
-      "summary": "setting up sipbuu.me, wiring particles, neon buttons, and this json-powered blog.",
-      "tags": ["site", "devlog", "meta"],
-      "image": "/res/blog/first-devlog-hero.png",
-      "imageAlt": "screenshot of the neon sipbuu.me homepage",
+      "id": "test-entry",
+      "title": "testing the pipes",
+      "date": "2025-02-19",
+      "summary": "just making sure the json-to-html pipeline isnt broken.",
+      "tags": ["test", "web"],
+      "image": "/res/blog/test-hero.png",
+      "imageAlt": "a simple test header image",
       "content": [
-        "today i finally decided to give sipbuu.me a proper landing page instead of a blank or default template.",
-        "goal: make it feel like a personal space, not a job hunt page. dark mode, neon, and a bunch of rounded corners everywhere.",
+        "this is a standard string entry for the body text.",
         {
           "type": "image",
-          "src": "/res/blog/first-devlog-detail.png",
-          "alt": "close-up of the bento grid layout"
+          "src": "/res/blog/content-test.png",
+          "alt": "an example of an inline image object"
         },
-        "the blog itself is powered by /res/blog.json, which means i can just throw new entries into a json file and call it a day."
-      ]
-    },
-    {
-      "id": "minecraft-chaos",
-      "title": "minecraft server chaos notes",
-      "date": "2025-01-10",
-      "summary": "half devlog, half chaos log about the cbhs minecraft network and whatever i broke this week.",
-      "tags": ["minecraft", "servers", "devlog"],
-      "image": "/res/blog/minecraft-chaos.png",
-      "imageAlt": "stylized screenshot of the cbhs minecraft spawn area",
-      "content": [
-        "the cbhs minecraft network continues to be both beautiful and mildly cursed.",
-        "i’ve been poking at plugins, configs, and validation checks to make joining feel as smooth as possible.",
-        "expect more experiments soon: custom hubs, tiny minigames, and ways to make the server feel like a weird little online campus."
-      ]
-    },
-    {
-      "id": "music-mood",
-      "title": "on music & pacing",
-      "date": "2025-01-20",
-      "summary": "rambling about making music at my own pace instead of trying to keep up with algorithms.",
-      "tags": ["music", "thoughts"],
-      "image": "/res/blog/music-mood.png",
-      "imageAlt": "soft abstract cover art representing quiet music",
-      "content": [
-        "i make music when my brain lets me, not when the internet says i should.",
-        "sometimes that means long gaps between tracks, but i’d rather have songs that feel like me than stuff i rushed out.",
-        "this site will eventually host more of that: links to bandcamp, maybe embeds, and devlogs about the /spotify-ish project i’m messing with."
+        "above is an example of an object-based entry. these can inject images, code blocks, or dividers mid-post."
       ]
     }
   ]
