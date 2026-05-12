@@ -59,24 +59,24 @@
     <h2 class="section-title">singles</h2>
 
     <div class="release-list">
-      <a class="release-card card-anim" href="https://open.spotify.com/artist/7Av16L8UunXl1BMK5S7mPH" target="_blank" rel="noopener">
+      <button class="release-card card-anim" type="button" data-release="somewhere">
         <span class="release-index">01</span>
         <img class="release-cover" src="../assets/img/somewhere.jpg" alt="somewhere single cover" />
         <span class="release-title">somewhere</span>
-        <span class="release-type">single</span>
-      </a>
-      <a class="release-card card-anim" href="https://open.spotify.com/artist/7Av16L8UunXl1BMK5S7mPH" target="_blank" rel="noopener">
+        <span class="release-type">single - details</span>
+      </button>
+      <button class="release-card card-anim" type="button" data-release="reflection">
         <span class="release-index">02</span>
         <img class="release-cover" src="../assets/img/reflection.jpg" alt="reflection single cover" />
         <span class="release-title">reflection</span>
-        <span class="release-type">single</span>
-      </a>
-      <a class="release-card card-anim" href="https://open.spotify.com/artist/7Av16L8UunXl1BMK5S7mPH" target="_blank" rel="noopener">
+        <span class="release-type">single - details</span>
+      </button>
+      <button class="release-card card-anim" type="button" data-release="closer">
         <span class="release-index">03</span>
         <img class="release-cover" src="../assets/img/closer.jpg" alt="closer single cover" />
         <span class="release-title">closer</span>
-        <span class="release-type">single</span>
-      </a>
+        <span class="release-type">single - details</span>
+      </button>
     </div>
   </section>
 
@@ -114,6 +114,43 @@
   </div>
 </footer>
 
+<div class="release-modal" id="release-modal" aria-hidden="true">
+  <div class="release-modal-backdrop" data-release-close></div>
+  <section class="release-modal-panel" role="dialog" aria-modal="true" aria-labelledby="release-modal-title">
+    <button class="release-modal-close" type="button" data-release-close aria-label="Close release details">x</button>
+    <div class="release-modal-grid">
+      <div>
+        <img class="release-modal-cover" id="release-modal-cover" src="../assets/img/somewhere.jpg" alt="" />
+        <div class="release-modal-actions">
+          <a class="btn" id="release-modal-spotify" href="https://open.spotify.com/artist/7Av16L8UunXl1BMK5S7mPH" target="_blank" rel="noopener">Spotify</a>
+          <a class="btn" id="release-modal-bandcamp" href="https://sipbuu.bandcamp.com/" target="_blank" rel="noopener">Bandcamp</a>
+        </div>
+      </div>
+
+      <div class="release-modal-copy">
+        <div class="release-modal-kicker" id="release-modal-artist">by sipbuu</div>
+        <h2 id="release-modal-title">somewhere</h2>
+        <p class="release-modal-note" id="release-modal-streaming">Streaming + Download. Download available in 16-bit/48kHz.</p>
+
+        <div class="release-detail-block">
+          <h3>tracks</h3>
+          <ol class="release-track-list" id="release-modal-tracks"></ol>
+        </div>
+
+        <div class="release-detail-block">
+          <h3>about</h3>
+          <div id="release-modal-about"></div>
+        </div>
+
+        <div class="release-detail-block">
+          <h3>credits</h3>
+          <p id="release-modal-credits"></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
 <div class="theme-toggle">
   <div class="theme-panel" id="theme-panel">
     <div class="swatch-label" style="font-family:var(--ff-mono);font-size:0.6rem;color:var(--text-mute);margin-bottom:0.2rem;">accent color</div>
@@ -129,6 +166,119 @@
 </div>
 
 <script src="../assets/js/main.js"></script>
-<script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
+<script>
+document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+const RELEASES = {
+  somewhere: {
+    title: 'somewhere',
+    artist: 'by sipbuu',
+    cover: '../assets/img/somewhere.jpg',
+    streaming: 'Streaming + Download. Download available in 16-bit/48kHz.',
+    tracks: [
+      { title: 'somewhere', time: '01:13' },
+      { title: 'somewhere (faster)', time: '01:08' }
+    ],
+    about: [
+      'somewhere.',
+      'havent released in a good while so here\'s something new',
+      '(got new equipment yipeee)',
+      '--',
+      'thank you.',
+      '~ sip'
+    ],
+    credits: 'released January 10, 2025',
+    spotify: 'https://open.spotify.com/artist/7Av16L8UunXl1BMK5S7mPH',
+    bandcamp: 'https://sipbuu.bandcamp.com/'
+  },
+  reflection: {
+    title: 'reflection',
+    artist: 'by sipbuu',
+    cover: '../assets/img/reflection.jpg',
+    streaming: 'Streaming wherever sipbuu is available.',
+    tracks: [
+      { title: 'reflection', time: 'single' }
+    ],
+    about: [
+      'reflection.',
+      'more notes coming soon.'
+    ],
+    credits: 'release notes coming soon',
+    spotify: 'https://open.spotify.com/artist/7Av16L8UunXl1BMK5S7mPH',
+    bandcamp: 'https://sipbuu.bandcamp.com/'
+  },
+  closer: {
+    title: 'closer',
+    artist: 'by sipbuu',
+    cover: '../assets/img/closer.jpg',
+    streaming: 'Streaming wherever sipbuu is available.',
+    tracks: [
+      { title: 'closer', time: 'single' }
+    ],
+    about: [
+      'closer.',
+      'more notes coming soon.'
+    ],
+    credits: 'release notes coming soon',
+    spotify: 'https://open.spotify.com/artist/7Av16L8UunXl1BMK5S7mPH',
+    bandcamp: 'https://sipbuu.bandcamp.com/'
+  }
+};
+
+const modal = document.getElementById('release-modal');
+const modalCover = document.getElementById('release-modal-cover');
+const modalArtist = document.getElementById('release-modal-artist');
+const modalTitle = document.getElementById('release-modal-title');
+const modalStreaming = document.getElementById('release-modal-streaming');
+const modalTracks = document.getElementById('release-modal-tracks');
+const modalAbout = document.getElementById('release-modal-about');
+const modalCredits = document.getElementById('release-modal-credits');
+const modalSpotify = document.getElementById('release-modal-spotify');
+const modalBandcamp = document.getElementById('release-modal-bandcamp');
+let previousFocus = null;
+
+function openReleaseModal(key) {
+  const release = RELEASES[key];
+  if (!release) return;
+
+  previousFocus = document.activeElement;
+  modalCover.src = release.cover;
+  modalCover.alt = `${release.title} cover`;
+  modalArtist.textContent = release.artist;
+  modalTitle.textContent = release.title;
+  modalStreaming.textContent = release.streaming;
+  modalTracks.innerHTML = release.tracks.map((track) => (
+    `<li><span>${track.title}</span><span>${track.time}</span></li>`
+  )).join('');
+  modalAbout.innerHTML = release.about.map((line) => `<p>${line}</p>`).join('');
+  modalCredits.textContent = release.credits;
+  modalSpotify.href = release.spotify;
+  modalBandcamp.href = release.bandcamp;
+
+  modal.classList.add('open');
+  modal.setAttribute('aria-hidden', 'false');
+  document.body.classList.add('modal-open');
+  modal.querySelector('.release-modal-close').focus();
+}
+
+function closeReleaseModal() {
+  modal.classList.remove('open');
+  modal.setAttribute('aria-hidden', 'true');
+  document.body.classList.remove('modal-open');
+  if (previousFocus) previousFocus.focus();
+}
+
+document.querySelectorAll('[data-release]').forEach((button) => {
+  button.addEventListener('click', () => openReleaseModal(button.dataset.release));
+});
+
+document.querySelectorAll('[data-release-close]').forEach((button) => {
+  button.addEventListener('click', closeReleaseModal);
+});
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && modal.classList.contains('open')) closeReleaseModal();
+});
+</script>
 </body>
 </html>
