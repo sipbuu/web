@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>projects</title>
+  <meta name="description" content="stuff i've built — local-first apps, music tools, and whatever else feels fun." />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">sipbuu<span class="cursor-blink"></span></a>
+    <ul class="nav-links">
+      <li><a href="/">home</a></li>
+      <li><a href="/projects">projects</a></li>
+      <li><a href="/music">music</a></li>
+      <li><a href="/blog">blog</a></li>
+      <li><a href="https://github.com/sipbuu" target="_blank" rel="noopener">github ↗</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="site-wrapper">
+
+  <div class="page-hero">
+    <div class="hero-eyebrow anim-init">things i've built</div>
+    <h1 class="page-hero-title anim-init">projects</h1>
+    <p class="page-hero-sub anim-init">
+      mostly made in free time. built at my own pace, for fun.
+      not for profit. more soon.
+    </p>
+  </div>
+
+  <hr class="divider" />
+
+  
+  <div class="section-label">active</div>
+
+  <div class="projects-grid" style="margin-bottom: 3rem;">
+
+    <div class="project-card card-anim">
+      <div class="project-header">
+        <span class="project-name">lokal</span>
+        <span class="project-lang">JavaScript · MIT</span>
+      </div>
+      <p class="project-desc">
+        local-first music player built w/ Electron and React. designed for people with large local music libraries who want a modern listening experience without the burdens of streaming subscriptions. supports youtube-dl, lyrics fetching, and a clean library view.
+      </p>
+      <div class="project-tags">
+        <span class="project-tag">electron</span>
+        <span class="project-tag">react</span>
+        <span class="project-tag">music-player</span>
+        <span class="project-tag">music-library</span>
+        <span class="project-tag">youtube-dl</span>
+        <span class="project-tag">lyrics-fetcher</span>
+        <span class="project-tag">local-first</span>
+      </div>
+      <div class="project-footer">
+        <a class="project-link" href="https://github.com/sipbuu/lokal" target="_blank" rel="noopener">
+          view on github →
+        </a>
+        <span class="project-stars">
+          <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          4 stars
+        </span>
+      </div>
+    </div>
+
+    <div class="project-card card-anim">
+      <div class="project-header">
+        <span class="project-name">lokal-ttml</span>
+        <span class="project-lang">HTML</span>
+      </div>
+      <p class="project-desc">
+        TTML editor for the Lokal program. create Apple-like synced lyrics with word-level timing — think fully synchronized lyrics that highlight per-word as the track plays. designed to fit into the lokal ecosystem cleanly.
+      </p>
+      <div class="project-tags">
+        <span class="project-tag">electron</span>
+        <span class="project-tag">lyrics</span>
+        <span class="project-tag">ttml</span>
+        <span class="project-tag">synced-lyrics</span>
+        <span class="project-tag">lokal</span>
+        <span class="project-tag">ttml-editor</span>
+        <span class="project-tag">word-sync</span>
+      </div>
+      <div class="project-footer">
+        <a class="project-link" href="https://github.com/sipbuu/lokal-ttml" target="_blank" rel="noopener">
+          view on github →
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  
+  <div class="section-label">in the works</div>
+
+  <div class="empty-state card-anim">
+    
+    building more stuff. check back or watch the github.
+  </div>
+
+  
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-wrapper">
+    <div class="footer-inner">
+      <div class="footer-sig">built by <span>sipbuu</span> · <span id="footer-year"></span></div>
+      <div class="footer-links">
+        <a href="/">home</a>
+        <a href="/projects">projects</a>
+        <a href="/music">music</a>
+        <a href="/blog">blog</a>
+        <a href="https://github.com/sipbuu" target="_blank" rel="noopener">github</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="theme-toggle">
+  <div class="theme-panel" id="theme-panel">
+    <div class="swatch-label" style="font-family:var(--ff-mono);font-size:0.6rem;color:var(--text-mute);margin-bottom:0.2rem;">accent color</div>
+    <div class="theme-swatch">
+      <div class="swatch" data-accent="amber"    style="background:#c4a882;" title="amber"></div>
+      <div class="swatch" data-accent="sage"     style="background:#8fa68e;" title="sage"></div>
+      <div class="swatch" data-accent="lavender" style="background:#9b8bb0;" title="lavender"></div>
+      <div class="swatch" data-accent="rose"     style="background:#b08b8b;" title="rose"></div>
+      <div class="swatch" data-accent="slate"    style="background:#8ba4b0;" title="slate"></div>
+    </div>
+  </div>
+  <button class="theme-btn" id="theme-toggle-btn">◈ theme</button>
+</div>
+
+<script src="../assets/js/main.js"></script>
+<script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

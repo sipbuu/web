@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hello there</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background: #000;
+      overflow: hidden;
+      cursor: none;
+      perspective: 900px;
+    }
+
+    #particles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .floater {
+      position: fixed;
+      will-change: transform;
+      user-select: none;
+      pointer-events: auto;
+      cursor: grab;
+      z-index: 10;
+      transition: filter 0.3s;
+      image-rendering: pixelated;
+      transform-style: preserve-3d;
+    }
+
+    .floater:active { cursor: grabbing; }
+
+    .floater:hover {
+      filter: brightness(1.3) drop-shadow(0 0 12px rgba(255,255,255,0.25));
+      z-index: 100;
+    }
+
+    .floater img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+      pointer-events: none;
+      transform: translateZ(1px);
+      filter: drop-shadow(0 20px 22px rgba(0,0,0,0.8));
+    }
+
+    .explosion {
+      position: fixed;
+      width: 220px;
+      height: 220px;
+      object-fit: contain;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      z-index: 9998;
+      image-rendering: pixelated;
+    }
+
+    #cursor {
+      position: fixed;
+      width: 6px;
+      height: 6px;
+      background: #fff;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      transform: translate(-50%, -50%);
+      mix-blend-mode: difference;
+      transition: width 0.15s, height 0.15s;
+    }
+
+    #escape {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      font-family: "Courier New", monospace;
+      font-size: 0.62rem;
+      color: #1a1a1a;
+      letter-spacing: 0.08em;
+      z-index: 9999;
+      transition: color 0.3s;
+      text-decoration: none;
+    }
+
+    #escape:hover { color: #444; }
+
+    #status {
+      position: fixed;
+      left: 1.5rem;
+      bottom: 1.5rem;
+      display: grid;
+      gap: 0.25rem;
+      color: #242424;
+      font-family: "Courier New", monospace;
+      font-size: 0.62rem;
+      letter-spacing: 0.08em;
+      z-index: 9999;
+      pointer-events: none;
+      transition: color 0.3s;
+    }
+
+    #status:hover { color: #444; }
+
+    #upload-btn {
+      position: fixed;
+      top: 1.5rem;
+      left: 1.5rem;
+      width: 32px;
+      height: 32px;
+      border: 1px solid #171717;
+      border-radius: 50%;
+      color: #222;
+      font-family: "Courier New", monospace;
+      font-size: 1.2rem;
+      line-height: 1;
+      z-index: 9999;
+      transition: color 0.3s, border-color 0.3s, transform 0.2s;
+    }
+
+    #upload-btn:hover {
+      color: #555;
+      border-color: #444;
+      transform: rotate(90deg);
+    }
+
+    #image-upload { display: none; }
+  </style>
+</head>
+<body>
+  <div id="cursor"></div>
+  <canvas id="particles"></canvas>
+  <button id="upload-btn" type="button" aria-label="Upload image">+</button>
+  <input id="image-upload" type="file" accept="image/*" />
+  <div id="status">
+    <div>things exploded: <span id="exploded-count">0</span></div>
+  </div>
+  <a href="/" id="escape">&larr; leave</a>
+
+  <script>
+    const IMAGES = ["../assets/img/ralsei.png"];
+    const FLOATER_COUNT = 24;
+    const MUSIC_SRC = "../assets/sound/void.mp3";
+    const MUSIC_NAME = "void.mp3";
+    const EXPLOSION_IMAGE_SRC = "../assets/img/explosion.gif";
+    const EXPLOSION_SOUND_SRC = "../assets/sound/explode.mp3";
+    const floaters = [];
+    let animRunning = false;
+    let particles = [];
+    let mouseX = window.innerWidth / 2;
+    let mouseY = window.innerHeight / 2;
+    let explodedCount = 0;
+
+    const cursorEl = document.getElementById("cursor");
+    const canvas = document.getElementById("particles");
+    const ctx = canvas.getContext("2d");
+    const uploadBtn = document.getElementById("upload-btn");
+    const imageUpload = document.getElementById("image-upload");
+    const explodedCountEl = document.getElementById("exploded-count");
+    const music = new Audio(MUSIC_SRC);
+    music.loop = true;
+    music.volume = 0.32;
+
+    function wakeMusic() {
+      music.play().catch(() => {});
+    }
+
+    music.addEventListener("ended", () => {
+      music.currentTime = 0;
+      wakeMusic();
+    });
+
+    document.addEventListener("pointerdown", wakeMusic, { once: true });
+    document.addEventListener("keydown", wakeMusic, { once: true });
+
+    document.addEventListener("mousemove", event => {
+      mouseX = event.clientX;
+      mouseY = event.clientY;
+      cursorEl.style.left = event.clientX + "px";
+      cursorEl.style.top = event.clientY + "px";
+    });
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function spawnParticle() {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        life: 1,
+        decay: Math.random() * 0.003 + 0.001,
+        size: Math.random() * 1.5 + 0.5,
+      });
+    }
+
+    function drawParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if (particles.length < 70) spawnParticle();
+      particles = particles.filter(particle => particle.life > 0);
+
+      for (const particle of particles) {
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+        particle.life -= particle.decay;
+
+        ctx.save();
+        ctx.globalAlpha = particle.life * 0.4;
+        ctx.fillStyle = "#fff";
+        ctx.beginPath();
+        ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+    }
+
+    function playExplosionSound() {
+      const sound = new Audio(EXPLOSION_SOUND_SRC);
+      sound.volume = 0.8;
+      sound.play().catch(() => {});
+    }
+
+    function showExplosion(x, y, size) {
+      const explosion = document.createElement("img");
+      explosion.className = "explosion";
+      explosion.src = `${EXPLOSION_IMAGE_SRC}?t=${Date.now()}-${Math.random()}`;
+      explosion.style.left = x + "px";
+      explosion.style.top = y + "px";
+      explosion.style.width = Math.max(180, size * 1.7) + "px";
+      explosion.style.height = Math.max(180, size * 1.7) + "px";
+      document.body.appendChild(explosion);
+      playExplosionSound();
+      setTimeout(() => explosion.remove(), 900);
+    }
+
+    function bumpExplodedCount() {
+      explodedCount += 1;
+      explodedCountEl.textContent = String(explodedCount);
+    }
+
+    class Floater {
+      constructor({ src, size, star }) {
+        this.el = document.createElement("div");
+        this.el.className = "floater";
+
+        const img = document.createElement("img");
+        img.src = src;
+        img.width = size;
+        img.draggable = false;
+        this.el.appendChild(img);
+        document.body.appendChild(this.el);
+
+        this.size = size;
+        this.x = Math.random() * Math.max(1, window.innerWidth - size);
+        this.y = Math.random() * Math.max(1, window.innerHeight - size);
+        this.z = star ? 160 : Math.random() * 900 - 520;
+
+        const speed = star ? 0.45 : Math.random() * 1.1 + 0.35;
+        const angle = Math.random() * Math.PI * 2;
+        this.vx = Math.cos(angle) * speed;
+        this.vy = Math.sin(angle) * speed;
+        this.vz = star ? 0.35 : Math.random() * 1.2 - 0.6;
+        this.rotX = Math.random() * 70 - 35;
+        this.rotY = Math.random() * 70 - 35;
+        this.rotZ = Math.random() * 360;
+        this.rotXV = (Math.random() - 0.5) * (star ? 0.8 : 2.2);
+        this.rotYV = (Math.random() - 0.5) * (star ? 0.8 : 2.2);
+        this.rotZV = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 1.7 + (star ? 0.6 : 1));
+        this.wobble = Math.random() * Math.PI * 2;
+        this.wobbleSpeed = Math.random() * 0.02 + 0.005;
+        this.wobbleAmp = star ? 0.5 : Math.random() * 1.8 + 0.4;
+        this.scaleT = Math.random() * Math.PI * 2;
+        this.scaleV = Math.random() * 0.01 + 0.003;
+        this.scaleAmp = star ? 0.04 : 0.06;
+        this.baseScale = star ? 1 : Math.random() * 0.3 + 0.85;
+        this.dragging = false;
+        this.dragOX = 0;
+        this.dragOY = 0;
+        this.exploded = false;
+
+        this.el.addEventListener("mousedown", event => {
+          this.dragging = true;
+          this.dragOX = event.clientX - this.x;
+          this.dragOY = event.clientY - this.y;
+          this.vx = 0;
+          this.vy = 0;
+          this.vz = 0;
+        });
+
+        document.addEventListener("mousemove", event => {
+          if (!this.dragging) return;
+          this.x = event.clientX - this.dragOX;
+          this.y = event.clientY - this.dragOY;
+        });
+
+        document.addEventListener("mouseup", () => {
+          if (!this.dragging) return;
+          this.dragging = false;
+          this.vx = (Math.random() - 0.5) * 3;
+          this.vy = (Math.random() - 0.5) * 3;
+          this.vz = (Math.random() - 0.5) * 2;
+        });
+
+        this.el.addEventListener("click", () => {
+          if (this.exploded) return;
+          this.rotXV = (Math.random() - 0.5) * 12;
+          this.rotYV = (Math.random() - 0.5) * 12;
+          this.rotZV = (Math.random() > 0.5 ? 1 : -1) * (Math.random() * 8 + 5);
+          setTimeout(() => {
+            this.rotXV = (Math.random() - 0.5) * 1.5;
+            this.rotYV = (Math.random() - 0.5) * 1.5;
+            this.rotZV = (Math.random() - 0.5) * 1.5;
+          }, 600);
+        });
+
+        this.el.addEventListener("dblclick", event => {
+          event.preventDefault();
+          this.explode();
+        });
+
+        floaters.push(this);
+      }
+
+      explode() {
+        if (this.exploded) return;
+        this.exploded = true;
+        this.dragging = false;
+
+        const rect = this.el.getBoundingClientRect();
+        showExplosion(rect.left + rect.width / 2, rect.top + rect.height / 2, Math.max(rect.width, rect.height));
+        bumpExplodedCount();
+        this.el.remove();
+
+        const index = floaters.indexOf(this);
+        if (index !== -1) floaters.splice(index, 1);
+      }
+
+      tick() {
+        if (!this.dragging) {
+          this.wobble += this.wobbleSpeed;
+          this.scaleT += this.scaleV;
+          this.rotX += this.rotXV + Math.cos(this.wobble) * this.wobbleAmp;
+          this.rotY += this.rotYV + Math.sin(this.wobble) * this.wobbleAmp;
+          this.rotZ += this.rotZV + Math.sin(this.wobble) * this.wobbleAmp;
+          this.rotXV *= 0.996;
+          this.rotYV *= 0.996;
+          this.rotZV *= 0.995;
+          this.x += this.vx;
+          this.y += this.vy;
+          this.z += this.vz;
+
+          const pad = 10;
+          if (this.x < -pad) { this.x = -pad; this.vx *= -1; }
+          if (this.y < -pad) { this.y = -pad; this.vy *= -1; }
+          if (this.x > window.innerWidth - this.size + pad) {
+            this.x = window.innerWidth - this.size + pad;
+            this.vx *= -1;
+          }
+          if (this.y > window.innerHeight - this.size + pad) {
+            this.y = window.innerHeight - this.size + pad;
+            this.vy *= -1;
+          }
+          if (this.z < -650) { this.z = -650; this.vz *= -1; }
+          if (this.z > 360) { this.z = 360; this.vz *= -1; }
+        }
+
+        this.apply();
+      }
+
+      apply() {
+        const parallaxX = (mouseX - window.innerWidth / 2) * (this.z / 6500);
+        const parallaxY = (mouseY - window.innerHeight / 2) * (this.z / 6500);
+        const scale = this.baseScale + Math.sin(this.scaleT) * this.scaleAmp;
+        const depth = (this.z + 650) / 1010;
+        const brightness = 0.45 + depth * 0.95;
+        const shadow = 8 + depth * 34;
+
+        this.el.style.left = this.x + "px";
+        this.el.style.top = this.y + "px";
+        this.el.style.zIndex = String(Math.round(20 + depth * 500));
+        this.el.style.filter = `brightness(${brightness}) drop-shadow(0 0 ${shadow}px rgba(255,255,255,${0.08 + depth * 0.16}))`;
+        this.el.style.transform = `
+          translate3d(${parallaxX}px, ${parallaxY}px, ${this.z}px)
+          rotateX(${this.rotX}deg)
+          rotateY(${this.rotY}deg)
+          rotateZ(${this.rotZ}deg)
+          scale(${scale})
+        `;
+      }
+    }
+
+    function spawnImageBatch(src, count = 10) {
+      wakeMusic();
+
+      for (let i = 0; i < count; i++) {
+        const size = Math.floor(Math.random() * 110 + 75);
+        new Floater({ src, size, star: false });
+      }
+    }
+
+    function loop() {
+      if (!animRunning) return;
+      drawParticles();
+      for (const floater of floaters) floater.tick();
+      requestAnimationFrame(loop);
+    }
+
+    function startChaos() {
+      if (animRunning) return;
+      animRunning = true;
+
+      for (let i = 0; i < FLOATER_COUNT; i++) {
+        const star = i === 0;
+        const size = star ? 190 : Math.floor(Math.random() * 95 + 58);
+        new Floater({ src: IMAGES[i % IMAGES.length], size, star });
+      }
+
+      loop();
+      wakeMusic();
+    }
+
+    uploadBtn.addEventListener("click", () => {
+      wakeMusic();
+      imageUpload.click();
+    });
+
+    imageUpload.addEventListener("change", () => {
+      const file = imageUpload.files && imageUpload.files[0];
+      if (!file) return;
+
+      const src = URL.createObjectURL(file);
+      IMAGES.push(src);
+      spawnImageBatch(src);
+      imageUpload.value = "";
+    });
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas);
+    window.addEventListener("load", startChaos);
+  </script>
+</body>
+</html>

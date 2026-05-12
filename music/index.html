@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>music</title>
+  <meta name="description" content="music by sipbuu, a beginner artist from Memphis, Tennessee." />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">sipbuu<span class="cursor-blink"></span></a>
+    <ul class="nav-links">
+      <li><a href="/">home</a></li>
+      <li><a href="/projects">projects</a></li>
+      <li><a href="/music">music</a></li>
+      <li><a href="/blog">blog</a></li>
+      <li><a href="https://github.com/sipbuu" target="_blank" rel="noopener">github</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="site-wrapper">
+
+  <section class="artist-hero">
+    <div class="artist-photo-slot anim-init">
+      <img class="artist-main-photo" src="../assets/img/artistimage1.png" alt="sipbuu artist photo" />
+      <div class="artist-photo-strip" aria-label="more artist photos">
+        <img src="../assets/img/artistimage2.jpg" alt="sipbuu artist photo 2" />
+        <img src="../assets/img/artistimage3.jpg" alt="sipbuu artist photo 3" />
+      </div>
+    </div>
+
+    <div class="artist-copy">
+      <div class="hero-eyebrow anim-init">Memphis, Tennessee</div>
+      <h1 class="hero-title anim-init">sipbuu</h1>
+      <div class="hero-meta anim-init">
+        <span class="hero-badge">beginner</span>
+        <span class="hero-badge highlight">sipbuu.me</span>
+      </div>
+      <p class="hero-bio anim-init">
+        just be you
+      </p>
+
+      <div class="artist-actions anim-init">
+        <a class="btn" href="https://open.spotify.com/artist/7Av16L8UunXl1BMK5S7mPH" target="_blank" rel="noopener">Spotify</a>
+        <a class="btn" href="https://sipbuu.bandcamp.com/" target="_blank" rel="noopener">Bandcamp</a>
+        <a class="btn" href="https://soundcloud.com/sipbuu" target="_blank" rel="noopener">SoundCloud</a>
+      </div>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <section>
+    <div class="section-label">releases</div>
+    <h2 class="section-title">singles</h2>
+
+    <div class="release-list">
+      <a class="release-card card-anim" href="https://open.spotify.com/artist/7Av16L8UunXl1BMK5S7mPH" target="_blank" rel="noopener">
+        <span class="release-index">01</span>
+        <img class="release-cover" src="../assets/img/somewhere.jpg" alt="somewhere single cover" />
+        <span class="release-title">somewhere</span>
+        <span class="release-type">single</span>
+      </a>
+      <a class="release-card card-anim" href="https://open.spotify.com/artist/7Av16L8UunXl1BMK5S7mPH" target="_blank" rel="noopener">
+        <span class="release-index">02</span>
+        <img class="release-cover" src="../assets/img/reflection.jpg" alt="reflection single cover" />
+        <span class="release-title">reflection</span>
+        <span class="release-type">single</span>
+      </a>
+      <a class="release-card card-anim" href="https://open.spotify.com/artist/7Av16L8UunXl1BMK5S7mPH" target="_blank" rel="noopener">
+        <span class="release-index">03</span>
+        <img class="release-cover" src="../assets/img/closer.jpg" alt="closer single cover" />
+        <span class="release-title">closer</span>
+        <span class="release-type">single</span>
+      </a>
+    </div>
+  </section>
+
+  <hr class="divider" />
+
+  <section>
+    <div class="section-label">listen</div>
+    <div class="artist-embed card-anim">
+      <iframe
+        title="sipbuu on Spotify"
+        src="https://open.spotify.com/embed/artist/7Av16L8UunXl1BMK5S7mPH?utm_source=generator&theme=0"
+        width="100%"
+        height="352"
+        frameborder="0"
+        allowfullscreen=""
+        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+        loading="lazy">
+      </iframe>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-wrapper">
+    <div class="footer-inner">
+      <div class="footer-sig">music by <span>sipbuu</span> - Memphis, Tennessee - <span id="footer-year"></span></div>
+      <div class="footer-links">
+        <a href="/">home</a>
+        <a href="/projects">projects</a>
+        <a href="/music">music</a>
+        <a href="/blog">blog</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="theme-toggle">
+  <div class="theme-panel" id="theme-panel">
+    <div class="swatch-label" style="font-family:var(--ff-mono);font-size:0.6rem;color:var(--text-mute);margin-bottom:0.2rem;">accent color</div>
+    <div class="theme-swatch">
+      <div class="swatch" data-accent="amber"    style="background:#c4a882;" title="amber"></div>
+      <div class="swatch" data-accent="sage"     style="background:#8fa68e;" title="sage"></div>
+      <div class="swatch" data-accent="lavender" style="background:#9b8bb0;" title="lavender"></div>
+      <div class="swatch" data-accent="rose"     style="background:#b08b8b;" title="rose"></div>
+      <div class="swatch" data-accent="slate"    style="background:#8ba4b0;" title="slate"></div>
+    </div>
+  </div>
+  <button class="theme-btn" id="theme-toggle-btn">theme</button>
+</div>
+
+<script src="../assets/js/main.js"></script>
+<script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

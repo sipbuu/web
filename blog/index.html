@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>blog</title>
+  <meta name="description" content="thoughts, updates, and whatever i feel like writing about." />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">sipbuu<span class="cursor-blink"></span></a>
+    <ul class="nav-links">
+      <li><a href="/">home</a></li>
+      <li><a href="/projects">projects</a></li>
+      <li><a href="/music">music</a></li>
+      <li><a href="/blog">blog</a></li>
+      <li><a href="https://github.com/sipbuu" target="_blank" rel="noopener">github ↗</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="site-wrapper">
+
+  <div class="page-hero">
+    <div class="hero-eyebrow anim-init">thoughts &amp; updates</div>
+    <h1 class="page-hero-title anim-init">blog</h1>
+    <p class="page-hero-sub anim-init">
+      no schedule. just stuff i feel like writing — music, projects, random observations. 
+      probably not often.
+    </p>
+  </div>
+
+  <hr class="divider" />
+
+  
+
+  <div class="blog-list">
+
+    <div class="blog-card card-anim" onclick="window.location='/blog/test'" style="cursor:pointer;">
+      <div class="blog-date">may 2026</div>
+      <div class="blog-content">
+        <div class="blog-title">hello</div>
+        <div class="blog-excerpt">testing the <strong>features</strong> of the <em>blog</em> to make sure that all features <code>(all)</code> work, and even <a href="https://sipbuu.me" target="_blank" rel="noopener">links</a></div>
+        <span class="blog-tag">personal</span>
+      </div>
+    </div>
+
+  </div>
+
+  
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-wrapper">
+    <div class="footer-inner">
+      <div class="footer-sig">built by <span>sipbuu</span> · <span id="footer-year"></span></div>
+      <div class="footer-links">
+        <a href="/">home</a>
+        <a href="/projects">projects</a>
+        <a href="/music">music</a>
+        <a href="/blog">blog</a>
+        <a href="https://github.com/sipbuu" target="_blank" rel="noopener">github</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="theme-toggle">
+  <div class="theme-panel" id="theme-panel">
+    <div class="swatch-label" style="font-family:var(--ff-mono);font-size:0.6rem;color:var(--text-mute);margin-bottom:0.2rem;">accent color</div>
+    <div class="theme-swatch">
+      <div class="swatch" data-accent="amber"    style="background:#c4a882;" title="amber"></div>
+      <div class="swatch" data-accent="sage"     style="background:#8fa68e;" title="sage"></div>
+      <div class="swatch" data-accent="lavender" style="background:#9b8bb0;" title="lavender"></div>
+      <div class="swatch" data-accent="rose"     style="background:#b08b8b;" title="rose"></div>
+      <div class="swatch" data-accent="slate"    style="background:#8ba4b0;" title="slate"></div>
+    </div>
+  </div>
+  <button class="theme-btn" id="theme-toggle-btn">◈ theme</button>
+</div>
+
+<script src="../assets/js/main.js"></script>
+<script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

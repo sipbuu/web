@@ -1,0 +1,1143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>lite converter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="stylesheet" href="../assets/css/style.css" />
+  <style>
+    
+    body { overflow-x: hidden; }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 3rem;
+    }
+    @media (max-width: 640px) { .tool-grid { grid-template-columns: 1fr; } }
+
+    
+    .tabs {
+      display: flex;
+      gap: 0;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-bottom: 2rem;
+    }
+    .tab-btn {
+      flex: 1;
+      font-family: var(--ff-mono);
+      font-size: 0.72rem;
+      padding: 0.7rem 0.5rem;
+      color: var(--text-mute);
+      background: var(--card-bg);
+      border-right: 1px solid var(--border);
+      letter-spacing: 0.04em;
+      transition: background 0.2s, color 0.2s;
+      cursor: pointer;
+    }
+    .tab-btn:last-child { border-right: none; }
+    .tab-btn:hover { background: var(--bg2); color: var(--text-dim); }
+    .tab-btn.active { background: var(--bg3); color: var(--accent); }
+
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+
+    
+    .panel {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .panel-title {
+      font-family: var(--ff-mono);
+      font-size: 0.68rem;
+      color: var(--text-mute);
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .panel-title::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border);
+    }
+
+    
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      background: var(--bg2);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--ff-mono);
+      font-size: 0.82rem;
+      padding: 0.6rem 0.8rem;
+      outline: none;
+      transition: border-color 0.2s;
+      resize: vertical;
+    }
+    input:focus, textarea:focus, select:focus {
+      border-color: var(--accent);
+    }
+    textarea { min-height: 120px; line-height: 1.6; }
+    select option { background: var(--bg2); }
+
+    label {
+      font-family: var(--ff-mono);
+      font-size: 0.68rem;
+      color: var(--text-mute);
+      display: block;
+      margin-bottom: 0.4rem;
+      letter-spacing: 0.04em;
+    }
+
+    .field { margin-bottom: 1rem; }
+    .field:last-child { margin-bottom: 0; }
+
+    .row { display: flex; gap: 0.75rem; align-items: flex-end; }
+    .row .field { flex: 1; margin-bottom: 0; }
+
+    
+    .action-btn {
+      font-family: var(--ff-mono);
+      font-size: 0.72rem;
+      padding: 0.55rem 1.1rem;
+      border: 1px solid var(--border2);
+      border-radius: var(--radius);
+      background: var(--bg3);
+      color: var(--text);
+      cursor: pointer;
+      letter-spacing: 0.03em;
+      transition: all 0.18s;
+      white-space: nowrap;
+    }
+    .action-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--bg2);
+    }
+    .action-btn.primary {
+      background: var(--accent);
+      color: var(--bg);
+      border-color: var(--accent);
+    }
+    .action-btn.primary:hover {
+      opacity: 0.85;
+      color: var(--bg);
+    }
+
+    
+    .output-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 0.7rem 0.9rem;
+      font-family: var(--ff-mono);
+      font-size: 0.8rem;
+      color: var(--text);
+      min-height: 2.4rem;
+      line-height: 1.6;
+      word-break: break-all;
+      position: relative;
+    }
+    .output-box.muted { color: var(--text-mute); font-size: 0.72rem; }
+    .copy-btn {
+      position: absolute;
+      top: 0.4rem; right: 0.4rem;
+      font-family: var(--ff-mono);
+      font-size: 0.6rem;
+      padding: 0.2rem 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: var(--bg2);
+      color: var(--text-mute);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .copy-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+    
+    .color-swatch-lg {
+      width: 100%;
+      height: 60px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      transition: background 0.3s;
+      margin-bottom: 0.75rem;
+    }
+
+    
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    .drop-zone:hover, .drop-zone.drag-over {
+      border-color: var(--accent);
+      background: var(--bg2);
+    }
+    .drop-zone input[type="file"] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+    }
+    .drop-zone-label {
+      font-family: var(--ff-mono);
+      font-size: 0.72rem;
+      color: var(--text-mute);
+      pointer-events: none;
+    }
+    .drop-zone-label span { color: var(--accent); }
+
+    
+    #img-preview {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: var(--radius);
+      margin: 0 auto 1rem;
+      display: none;
+      border: 1px solid var(--border);
+    }
+    #img-info {
+      font-family: var(--ff-mono);
+      font-size: 0.7rem;
+      color: var(--text-mute);
+      margin-bottom: 1rem;
+    }
+
+    
+    #tap-btn {
+      width: 100%;
+      height: 80px;
+      font-family: var(--ff-head);
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+      border: 2px solid var(--border2);
+      border-radius: var(--radius-lg);
+      background: var(--bg2);
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.1s;
+      margin-bottom: 1rem;
+      user-select: none;
+    }
+    #tap-btn:active {
+      background: var(--bg3);
+      border-color: var(--accent);
+      color: var(--accent);
+      transform: scale(0.98);
+    }
+    #bpm-display {
+      font-family: var(--ff-head);
+      font-size: 2.5rem;
+      color: var(--accent);
+      text-align: center;
+      margin-bottom: 0.3rem;
+    }
+    #bpm-label {
+      font-family: var(--ff-mono);
+      font-size: 0.65rem;
+      color: var(--text-mute);
+      text-align: center;
+      letter-spacing: 0.1em;
+    }
+
+    .notice {
+      font-family: var(--ff-mono);
+      font-size: 0.68rem;
+      color: var(--text-mute);
+      padding: 0.5rem 0.8rem;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      margin-top: 0.75rem;
+      line-height: 1.5;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">sipbuu<span class="cursor-blink"></span></a>
+    <ul class="nav-links">
+      <li><a href="/">home</a></li>
+      <li><a href="/projects">projects</a></li>
+      <li><a href="/music">music</a></li>
+      <li><a href="/blog">blog</a></li>
+      <li><a href="https://github.com/sipbuu" target="_blank" rel="noopener">github ↗</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="site-wrapper" style="padding-top:0.5rem;">
+
+  <div class="page-hero">
+    <div class="hero-eyebrow anim-init">lite converter</div>
+    <h1 class="page-hero-title anim-init">conveter</h1>
+    <p class="page-hero-sub anim-init">
+      image · text/markup · color codes · audio utils.
+      runs in your browser.
+    </p>
+  </div>
+
+  
+  <div class="tabs anim-init">
+    <button class="tab-btn active" onclick="switchTab('image')">image</button>
+    <button class="tab-btn" onclick="switchTab('text')">text / markup</button>
+    <button class="tab-btn" onclick="switchTab('color')">color</button>
+    <button class="tab-btn" onclick="switchTab('audio')">audio</button>
+  </div>
+
+  
+  <div id="tab-image" class="tab-pane active">
+
+    <div class="panel">
+      <div class="panel-title">image converter + resizer</div>
+
+      <div class="drop-zone" id="drop-zone">
+        <input type="file" accept="image/*" id="img-input" />
+        <div class="drop-zone-label">
+          drop an image here or <span>click to browse</span><br/>
+          <span style="color:var(--text-mute); font-size:0.62rem;">png · jpg · webp · gif · bmp</span>
+        </div>
+      </div>
+
+      <img id="img-preview" alt="preview" />
+      <div id="img-info"></div>
+
+      <div class="row" style="margin-bottom:1rem;">
+        <div class="field">
+          <label>output format</label>
+          <select id="img-format">
+            <option value="image/png">PNG</option>
+            <option value="image/jpeg" selected>JPG</option>
+            <option value="image/webp">WebP</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>quality (jpg/webp)</label>
+          <input type="number" id="img-quality" value="92" min="1" max="100" />
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom:1rem;">
+        <div class="field">
+          <label>max width (px, 0 = original)</label>
+          <input type="number" id="img-width" value="0" min="0" />
+        </div>
+        <div class="field">
+          <label>max height (px, 0 = original)</label>
+          <input type="number" id="img-height" value="0" min="0" />
+        </div>
+        <div class="field" style="flex:0;">
+          <label style="visibility:hidden;">lock</label>
+          <button class="action-btn" id="aspect-btn" onclick="toggleAspect()" title="lock aspect ratio">⇔ lock ratio</button>
+        </div>
+      </div>
+
+      <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
+        <button class="action-btn primary" onclick="convertImage()">convert + download</button>
+        <button class="action-btn" onclick="clearImage()">clear</button>
+      </div>
+
+      <div class="notice" style="margin-top:1rem;">
+        everything runs in-browser via canvas. nothing is sent anywhere.
+      </div>
+    </div>
+
+  </div>
+
+  
+  <div id="tab-text" class="tab-pane">
+
+    
+    <div class="panel">
+      <div class="panel-title">markdown → html</div>
+      <div class="field">
+        <label>markdown input</label>
+        <textarea id="md-input" placeholder="# hello&#10;**bold**, _italic_, [link](url)&#10;- list item" rows="6"></textarea>
+      </div>
+      <button class="action-btn primary" onclick="convertMD()" style="margin-bottom:1rem;">convert</button>
+      <div class="field">
+        <label>html output</label>
+        <div class="output-box" id="md-output" style="min-height:80px; white-space:pre-wrap;">
+          <button class="copy-btn" onclick="copyEl('md-output')">copy</button>
+          <span style="color:var(--text-mute);font-size:0.72rem;">output appears here</span>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="panel">
+      <div class="panel-title">JSON ↔ YAML (lite)</div>
+      <div class="field">
+        <label>input (JSON or YAML)</label>
+        <textarea id="jy-input" placeholder='{"name": "sip", "cool": true}' rows="5"></textarea>
+      </div>
+      <div style="display:flex; gap:0.75rem; margin-bottom:1rem;">
+        <button class="action-btn primary" onclick="jsonToYaml()">JSON → YAML</button>
+        <button class="action-btn primary" onclick="yamlToJson()">YAML → JSON</button>
+      </div>
+      <div class="field">
+        <label>output</label>
+        <div class="output-box" id="jy-output" style="min-height:80px; white-space:pre-wrap;">
+          <button class="copy-btn" onclick="copyEl('jy-output')">copy</button>
+          <span style="color:var(--text-mute);font-size:0.72rem;">output appears here</span>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="panel">
+      <div class="panel-title">text utils</div>
+      <div class="field">
+        <textarea id="txt-input" placeholder="your text here..." rows="4"></textarea>
+      </div>
+      <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem;">
+        <button class="action-btn" onclick="txtTransform('upper')">UPPER</button>
+        <button class="action-btn" onclick="txtTransform('lower')">lower</button>
+        <button class="action-btn" onclick="txtTransform('title')">Title Case</button>
+        <button class="action-btn" onclick="txtTransform('snake')">snake_case</button>
+        <button class="action-btn" onclick="txtTransform('camel')">camelCase</button>
+        <button class="action-btn" onclick="txtTransform('kebab')">kebab-case</button>
+        <button class="action-btn" onclick="txtTransform('count')">count</button>
+        <button class="action-btn" onclick="txtTransform('reverse')">reverse</button>
+        <button class="action-btn" onclick="txtTransform('trim')">trim lines</button>
+        <button class="action-btn" onclick="txtTransform('dedupe')">dedupe lines</button>
+        <button class="action-btn" onclick="txtTransform('sort')">sort lines</button>
+        <button class="action-btn" onclick="txtTransform('b64e')">base64 enc</button>
+        <button class="action-btn" onclick="txtTransform('b64d')">base64 dec</button>
+        <button class="action-btn" onclick="txtTransform('url_enc')">url encode</button>
+        <button class="action-btn" onclick="txtTransform('url_dec')">url decode</button>
+      </div>
+      <div class="field">
+        <div class="output-box" id="txt-output" style="min-height:60px; white-space:pre-wrap;">
+          <button class="copy-btn" onclick="copyEl('txt-output')">copy</button>
+          <span style="color:var(--text-mute);font-size:0.72rem;">output appears here</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  
+  <div id="tab-color" class="tab-pane">
+
+    <div class="panel">
+      <div class="panel-title">color converter</div>
+
+      <div id="color-swatch-lg" class="color-swatch-lg" style="background:#c4a882;"></div>
+
+      <div class="row" style="margin-bottom:0.75rem; align-items:center;">
+        <div class="field">
+          <label>hex</label>
+          <input type="text" id="hex-in" placeholder="#c4a882" value="#c4a882" oninput="fromHex(this.value)" />
+        </div>
+        <div style="padding-bottom:0.4rem;">
+          <input type="color" id="color-picker" value="#c4a882" oninput="fromHex(this.value); document.getElementById('hex-in').value=this.value" style="width:36px;height:36px;border:1px solid var(--border);border-radius:var(--radius);padding:2px;background:var(--bg2);cursor:pointer;" />
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom:0.75rem;">
+        <div class="field">
+          <label>R (0–255)</label>
+          <input type="number" id="rgb-r" min="0" max="255" value="196" oninput="fromRGB()" />
+        </div>
+        <div class="field">
+          <label>G (0–255)</label>
+          <input type="number" id="rgb-g" min="0" max="255" value="168" oninput="fromRGB()" />
+        </div>
+        <div class="field">
+          <label>B (0–255)</label>
+          <input type="number" id="rgb-b" min="0" max="255" value="130" oninput="fromRGB()" />
+        </div>
+      </div>
+
+      <div class="row" style="margin-bottom:1rem;">
+        <div class="field">
+          <label>H (0–360)</label>
+          <input type="number" id="hsl-h" min="0" max="360" value="33" oninput="fromHSL()" />
+        </div>
+        <div class="field">
+          <label>S (0–100%)</label>
+          <input type="number" id="hsl-s" min="0" max="100" value="39" oninput="fromHSL()" />
+        </div>
+        <div class="field">
+          <label>L (0–100%)</label>
+          <input type="number" id="hsl-l" min="0" max="100" value="64" oninput="fromHSL()" />
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0.5rem;">
+        <div>
+          <label>hex</label>
+          <div class="output-box" id="out-hex" style="font-size:0.78rem;">
+            <button class="copy-btn" onclick="copyEl('out-hex')">copy</button>
+            #c4a882
+          </div>
+        </div>
+        <div>
+          <label>rgb()</label>
+          <div class="output-box" id="out-rgb" style="font-size:0.78rem;">
+            <button class="copy-btn" onclick="copyEl('out-rgb')">copy</button>
+            rgb(196,168,130)
+          </div>
+        </div>
+        <div>
+          <label>hsl()</label>
+          <div class="output-box" id="out-hsl" style="font-size:0.78rem;">
+            <button class="copy-btn" onclick="copyEl('out-hsl')">copy</button>
+            hsl(33,39%,64%)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+    <div class="panel">
+      <div class="panel-title">quick palette</div>
+      <p style="font-family:var(--ff-mono);font-size:0.7rem;color:var(--text-mute);margin-bottom:1rem;">based on the color above</p>
+      <div id="palette-row" style="display:flex;gap:0.5rem;flex-wrap:wrap;"></div>
+    </div>
+
+  </div>
+
+  
+  <div id="tab-audio" class="tab-pane">
+
+    
+    <div class="panel">
+      <div class="panel-title">BPM tap calculator</div>
+      <button id="tap-btn" onclick="tap()">tap</button>
+      <div id="bpm-display">—</div>
+      <div id="bpm-label">BPM</div>
+      <p style="font-family:var(--ff-mono);font-size:0.68rem;color:var(--text-mute);text-align:center;margin-top:0.5rem;">tap at least 3× · resets after 3s of silence</p>
+      <div style="display:flex;gap:0.75rem;justify-content:center;margin-top:1rem;">
+        <button class="action-btn" onclick="resetTap()">reset</button>
+      </div>
+    </div>
+
+    
+    <div class="panel">
+      <div class="panel-title">beat → time converter</div>
+      <div class="row" style="margin-bottom:1rem;">
+        <div class="field">
+          <label>BPM</label>
+          <input type="number" id="conv-bpm" value="120" min="1" max="999" oninput="updateBeatTime()" />
+        </div>
+        <div class="field">
+          <label>beats</label>
+          <input type="number" id="conv-beats" value="4" min="1" oninput="updateBeatTime()" />
+        </div>
+        <div class="field">
+          <label>note value</label>
+          <select id="conv-note" oninput="updateBeatTime()">
+            <option value="1">whole (1/1)</option>
+            <option value="2">half (1/2)</option>
+            <option value="4" selected>quarter (1/4)</option>
+            <option value="8">eighth (1/8)</option>
+            <option value="16">sixteenth (1/16)</option>
+          </select>
+        </div>
+      </div>
+      <div class="output-box" id="beat-time-out">
+        <button class="copy-btn" onclick="copyEl('beat-time-out')">copy</button>
+        —
+      </div>
+    </div>
+
+    
+    <div class="panel">
+      <div class="panel-title">frequency ↔ musical note</div>
+      <div class="row" style="margin-bottom:1rem; align-items:flex-end;">
+        <div class="field">
+          <label>frequency (Hz)</label>
+          <input type="number" id="freq-in" value="440" min="1" oninput="freqToNote()" />
+        </div>
+        <div>
+          <button class="action-btn" onclick="freqToNote()">convert</button>
+        </div>
+      </div>
+      <div class="output-box" id="note-out" style="margin-bottom:1rem;">
+        <button class="copy-btn" onclick="copyEl('note-out')">copy</button>
+        A4 — 440 Hz (concert pitch)
+      </div>
+      <div class="row" style="margin-bottom:1rem; align-items:flex-end;">
+        <div class="field">
+          <label>note (e.g. C4, A#3, Bb5)</label>
+          <input type="text" id="note-in" value="A4" oninput="noteToFreq()" />
+        </div>
+        <div>
+          <button class="action-btn" onclick="noteToFreq()">convert</button>
+        </div>
+      </div>
+      <div class="output-box" id="freq-out">
+        <button class="copy-btn" onclick="copyEl('freq-out')">copy</button>
+        440.00 Hz
+      </div>
+    </div>
+
+    
+    <div class="panel">
+      <div class="panel-title">delay times (ms)</div>
+      <div class="row" style="margin-bottom:1rem;">
+        <div class="field">
+          <label>BPM</label>
+          <input type="number" id="delay-bpm" value="120" min="1" oninput="calcDelays()" />
+        </div>
+      </div>
+      <div id="delay-table" style="font-family:var(--ff-mono);font-size:0.78rem;"></div>
+    </div>
+
+  </div>
+
+</main>
+
+<footer class="site-footer">
+  <div class="site-wrapper">
+    <div class="footer-inner">
+      <div class="footer-sig">built by <span>sipbuu</span> · runs fully in-browser · <span id="footer-year"></span></div>
+      <div class="footer-links">
+        <a href="/">home</a>
+        <a href="/projects">projects</a>
+        <a href="/blog">blog</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="theme-toggle">
+  <div class="theme-panel" id="theme-panel">
+    <div class="swatch-label" style="font-family:var(--ff-mono);font-size:0.6rem;color:var(--text-mute);margin-bottom:0.2rem;">accent color</div>
+    <div class="theme-swatch">
+      <div class="swatch" data-accent="amber"    style="background:#c4a882;"></div>
+      <div class="swatch" data-accent="sage"     style="background:#8fa68e;"></div>
+      <div class="swatch" data-accent="lavender" style="background:#9b8bb0;"></div>
+      <div class="swatch" data-accent="rose"     style="background:#b08b8b;"></div>
+      <div class="swatch" data-accent="slate"    style="background:#8ba4b0;"></div>
+    </div>
+  </div>
+  <button class="theme-btn" id="theme-toggle-btn">◈ theme</button>
+</div>
+
+<script src="../assets/js/main.js"></script>
+<script>
+document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+}
+
+
+
+function copyEl(id) {
+  const el = document.getElementById(id);
+  const btn = el.querySelector('.copy-btn');
+  
+
+  let text = '';
+  el.childNodes.forEach(n => {
+    if (n.nodeType === 3) text += n.textContent;
+    else if (n.tagName !== 'BUTTON') text += n.textContent;
+  });
+  text = text.trim();
+  navigator.clipboard.writeText(text).then(() => {
+    if (btn) { btn.textContent = 'copied!'; setTimeout(() => btn.textContent = 'copy', 1500); }
+  });
+}
+
+function setOutput(id, html, isText=true) {
+  const el = document.getElementById(id);
+  const btn = el.querySelector('.copy-btn');
+  el.innerHTML = '';
+  if (btn) el.appendChild(btn.cloneNode(true));
+  if (isText) {
+    el.appendChild(document.createTextNode(html));
+  } else {
+    const span = document.createElement('span');
+    span.innerHTML = html;
+    el.appendChild(span);
+  }
+  
+
+  el.querySelector('.copy-btn').onclick = () => copyEl(id);
+}
+
+
+
+let imgFile = null;
+let origW = 0, origH = 0;
+let lockAspect = true;
+
+const imgInput  = document.getElementById('img-input');
+const imgPrev   = document.getElementById('img-preview');
+const imgInfo   = document.getElementById('img-info');
+const dropZone  = document.getElementById('drop-zone');
+
+imgInput.addEventListener('change', e => loadImage(e.target.files[0]));
+
+dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+dropZone.addEventListener('drop', e => {
+  e.preventDefault(); dropZone.classList.remove('drag-over');
+  if (e.dataTransfer.files[0]) loadImage(e.dataTransfer.files[0]);
+});
+
+function loadImage(file) {
+  if (!file || !file.type.startsWith('image/')) return;
+  imgFile = file;
+  const url = URL.createObjectURL(file);
+  imgPrev.src = url;
+  imgPrev.style.display = 'block';
+  imgPrev.onload = () => {
+    origW = imgPrev.naturalWidth;
+    origH = imgPrev.naturalHeight;
+    document.getElementById('img-width').value  = origW;
+    document.getElementById('img-height').value = origH;
+    imgInfo.textContent = `${file.name} · ${origW}×${origH}px · ${(file.size/1024).toFixed(1)}KB`;
+  };
+}
+
+function toggleAspect() {
+  lockAspect = !lockAspect;
+  document.getElementById('aspect-btn').textContent = lockAspect ? '⇔ lock ratio' : '⇔ free';
+}
+
+document.getElementById('img-width').addEventListener('input', e => {
+  if (!lockAspect || !origW) return;
+  const w = parseInt(e.target.value);
+  if (w > 0) document.getElementById('img-height').value = Math.round(w * origH / origW);
+});
+document.getElementById('img-height').addEventListener('input', e => {
+  if (!lockAspect || !origH) return;
+  const h = parseInt(e.target.value);
+  if (h > 0) document.getElementById('img-width').value = Math.round(h * origW / origH);
+});
+
+function convertImage() {
+  if (!imgFile) { alert('drop an image first'); return; }
+  const fmt     = document.getElementById('img-format').value;
+  const quality = parseInt(document.getElementById('img-quality').value) / 100;
+  let   tw      = parseInt(document.getElementById('img-width').value)  || origW;
+  let   th      = parseInt(document.getElementById('img-height').value) || origH;
+
+  const canvas = document.createElement('canvas');
+  canvas.width = tw; canvas.height = th;
+  const ctx = canvas.getContext('2d');
+  const img = new Image();
+  img.onload = () => {
+    ctx.drawImage(img, 0, 0, tw, th);
+    const ext = fmt === 'image/png' ? 'png' : fmt === 'image/webp' ? 'webp' : 'jpg';
+    canvas.toBlob(blob => {
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = imgFile.name.replace(/\.[^.]+$/, '') + '_converted.' + ext;
+      a.click();
+    }, fmt, quality);
+  };
+  img.src = URL.createObjectURL(imgFile);
+}
+
+function clearImage() {
+  imgFile = null; origW = 0; origH = 0;
+  imgPrev.style.display = 'none'; imgPrev.src = '';
+  imgInfo.textContent = '';
+  imgInput.value = '';
+  document.getElementById('img-width').value  = 0;
+  document.getElementById('img-height').value = 0;
+}
+
+
+
+function convertMD() {
+  const src = document.getElementById('md-input').value;
+  let html = src
+    .replace(/^###### (.+)$/gm, '<h6>$1</h6>')
+    .replace(/^##### (.+)$/gm,  '<h5>$1</h5>')
+    .replace(/^#### (.+)$/gm,   '<h4>$1</h4>')
+    .replace(/^### (.+)$/gm,    '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,     '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm,      '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g,  '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,      '<em>$1</em>')
+    .replace(/_(.+?)_/g,        '<em>$1</em>')
+    .replace(/`(.+?)`/g,        '<code>$1</code>')
+    .replace(/\[(.+?)\]\((.+?)\)/g, '<a href="$2">$1</a>')
+    .replace(/^> (.+)$/gm,      '<blockquote>$1</blockquote>')
+    .replace(/^- (.+)$/gm,      '<li>$1</li>')
+    .replace(/^---$/gm,         '<hr/>')
+    .replace(/\n\n/g,            '\n<br/>\n');
+  setOutput('md-output', html);
+}
+
+
+
+
+
+function objToYaml(obj, indent=0) {
+  const pad = '  '.repeat(indent);
+  if (obj === null) return 'null';
+  if (typeof obj === 'boolean' || typeof obj === 'number') return String(obj);
+  if (typeof obj === 'string') {
+    if (/[\n:#{}&*!|>'"%@`,]/.test(obj) || obj === '') return JSON.stringify(obj);
+    return obj;
+  }
+  if (Array.isArray(obj)) {
+    if (!obj.length) return '[]';
+    return obj.map(v => {
+      const val = objToYaml(v, indent + 1);
+      if (typeof v === 'object' && v !== null && !Array.isArray(v)) {
+        return pad + '-\n' + Object.entries(v).map(([k,x]) =>
+          pad + '  ' + k + ': ' + objToYaml(x, indent+2)).join('\n');
+      }
+      return pad + '- ' + val;
+    }).join('\n');
+  }
+  return Object.entries(obj).map(([k, v]) => {
+    const val = objToYaml(v, indent + 1);
+    if (typeof v === 'object' && v !== null) {
+      return pad + k + ':\n' + val;
+    }
+    return pad + k + ': ' + val;
+  }).join('\n');
+}
+
+// lite YAML parser (covers most common cases)
+function yamlToObj(src) {
+  // just try JSON first
+  try { return JSON.parse(src); } catch {}
+
+  const lines = src.split('\n');
+  const result = {};
+  let stack = [{ obj: result, indent: -1 }];
+
+  for (let line of lines) {
+    if (!line.trim() || line.trim().startsWith('#')) continue;
+    const indent = line.match(/^(\s*)/)[1].length;
+    const trimmed = line.trim();
+
+    if (trimmed.startsWith('- ')) {
+      // array item (basic)
+      const val = trimmed.slice(2).trim();
+      const parent = stack[stack.length-1].obj;
+      if (!Array.isArray(parent)) continue;
+      parent.push(parseYamlVal(val));
+      continue;
+    }
+
+    const colonIdx = trimmed.indexOf(': ');
+    const endsColon = trimmed.endsWith(':');
+    if (colonIdx === -1 && !endsColon) continue;
+
+    const key = endsColon ? trimmed.slice(0, -1) : trimmed.slice(0, colonIdx);
+    const valStr = endsColon ? null : trimmed.slice(colonIdx + 2);
+
+    while (stack.length > 1 && stack[stack.length-1].indent >= indent) stack.pop();
+    const parent = stack[stack.length-1].obj;
+
+    if (valStr === null || valStr === '') {
+      const newObj = {};
+      if (Array.isArray(parent)) parent.push(newObj);
+      else parent[key] = newObj;
+      stack.push({ obj: newObj, indent });
+    } else {
+      const val = parseYamlVal(valStr);
+      if (Array.isArray(parent)) parent.push(val);
+      else parent[key] = val;
+    }
+  }
+  return result;
+}
+
+function parseYamlVal(s) {
+  if (s === 'true')  return true;
+  if (s === 'false') return false;
+  if (s === 'null' || s === '~') return null;
+  if (!isNaN(s) && s !== '') return Number(s);
+  if ((s.startsWith('"') && s.endsWith('"')) ||
+      (s.startsWith("'") && s.endsWith("'"))) return s.slice(1,-1);
+  return s;
+}
+
+function jsonToYaml() {
+  try {
+    const obj = JSON.parse(document.getElementById('jy-input').value);
+    setOutput('jy-output', objToYaml(obj));
+  } catch(e) { setOutput('jy-output', 'error: ' + e.message); }
+}
+function yamlToJson() {
+  try {
+    const obj = yamlToObj(document.getElementById('jy-input').value);
+    setOutput('jy-output', JSON.stringify(obj, null, 2));
+  } catch(e) { setOutput('jy-output', 'error: ' + e.message); }
+}
+
+// ── TEXT UTILS ────────────────────────────────────
+function txtTransform(op) {
+  const txt = document.getElementById('txt-input').value;
+  let out = txt;
+  switch(op) {
+    case 'upper':   out = txt.toUpperCase(); break;
+    case 'lower':   out = txt.toLowerCase(); break;
+    case 'title':   out = txt.replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1).toLowerCase()); break;
+    case 'snake':   out = txt.trim().toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g,''); break;
+    case 'camel':   out = txt.trim().toLowerCase().split(/\s+/).map((w,i)=>i?w[0].toUpperCase()+w.slice(1):w).join(''); break;
+    case 'kebab':   out = txt.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g,''); break;
+    case 'count': {
+      const words = txt.trim().split(/\s+/).filter(Boolean).length;
+      const chars = txt.length;
+      const lines = txt.split('\n').length;
+      out = `chars: ${chars}  words: ${words}  lines: ${lines}`;
+      break;
+    }
+    case 'reverse': out = txt.split('\n').map(l => l.split('').reverse().join('')).join('\n'); break;
+    case 'trim':    out = txt.split('\n').map(l => l.trim()).join('\n'); break;
+    case 'dedupe':  out = [...new Set(txt.split('\n'))].join('\n'); break;
+    case 'sort':    out = txt.split('\n').sort().join('\n'); break;
+    case 'b64e':    try { out = btoa(txt); } catch { out = 'error: non-latin chars'; } break;
+    case 'b64d':    try { out = atob(txt); } catch { out = 'error: invalid base64'; } break;
+    case 'url_enc': out = encodeURIComponent(txt); break;
+    case 'url_dec': try { out = decodeURIComponent(txt); } catch { out = 'error: invalid encoding'; } break;
+  }
+  setOutput('txt-output', out);
+}
+
+// ── COLOR CONVERTER ───────────────────────────────
+function hexToRgb(hex) {
+  hex = hex.replace('#','');
+  if (hex.length === 3) hex = hex.split('').map(c=>c+c).join('');
+  const n = parseInt(hex, 16);
+  return [(n>>16)&255, (n>>8)&255, n&255];
+}
+function rgbToHex(r,g,b) {
+  return '#' + [r,g,b].map(v=>Math.round(v).toString(16).padStart(2,'0')).join('');
+}
+function rgbToHsl(r,g,b) {
+  r/=255; g/=255; b/=255;
+  const max=Math.max(r,g,b), min=Math.min(r,g,b);
+  let h,s,l=(max+min)/2;
+  if (max===min) { h=s=0; } else {
+    const d=max-min; s=l>0.5?d/(2-max-min):d/(max+min);
+    switch(max){
+      case r: h=((g-b)/d+(g<b?6:0))/6; break;
+      case g: h=((b-r)/d+2)/6; break;
+      default:h=((r-g)/d+4)/6;
+    }
+  }
+  return [Math.round(h*360), Math.round(s*100), Math.round(l*100)];
+}
+function hslToRgb(h,s,l) {
+  s/=100; l/=100;
+  const c=(1-Math.abs(2*l-1))*s, x=c*(1-Math.abs((h/60)%2-1)), m=l-c/2;
+  let r=0,g=0,b=0;
+  if(h<60){r=c;g=x;}else if(h<120){r=x;g=c;}else if(h<180){g=c;b=x;}
+  else if(h<240){g=x;b=c;}else if(h<300){r=x;b=c;}else{r=c;b=x;}
+  return [Math.round((r+m)*255),Math.round((g+m)*255),Math.round((b+m)*255)];
+}
+
+function updateColorOutputs(r,g,b) {
+  const hex = rgbToHex(r,g,b);
+  const [h,s,l] = rgbToHsl(r,g,b);
+  document.getElementById('hex-in').value = hex;
+  document.getElementById('color-picker').value = hex;
+  document.getElementById('rgb-r').value = r;
+  document.getElementById('rgb-g').value = g;
+  document.getElementById('rgb-b').value = b;
+  document.getElementById('hsl-h').value = h;
+  document.getElementById('hsl-s').value = s;
+  document.getElementById('hsl-l').value = l;
+  document.getElementById('color-swatch-lg').style.background = hex;
+  setOutput('out-hex', hex);
+  setOutput('out-rgb', `rgb(${r}, ${g}, ${b})`);
+  setOutput('out-hsl', `hsl(${h}, ${s}%, ${l}%)`);
+  buildPalette(h, s, l);
+}
+
+function fromHex(val) {
+  val = val.trim();
+  if (!/^#?[0-9a-fA-F]{3,6}$/.test(val)) return;
+  const [r,g,b] = hexToRgb(val.startsWith('#') ? val : '#'+val);
+  updateColorOutputs(r,g,b);
+}
+function fromRGB() {
+  const r=+document.getElementById('rgb-r').value;
+  const g=+document.getElementById('rgb-g').value;
+  const b=+document.getElementById('rgb-b').value;
+  updateColorOutputs(r,g,b);
+}
+function fromHSL() {
+  const h=+document.getElementById('hsl-h').value;
+  const s=+document.getElementById('hsl-s').value;
+  const l=+document.getElementById('hsl-l').value;
+  const [r,g,b] = hslToRgb(h,s,l);
+  updateColorOutputs(r,g,b);
+}
+
+function buildPalette(h, s, l) {
+  const row = document.getElementById('palette-row');
+  row.innerHTML = '';
+  const shades = [15,25,38,50,62,72,82];
+  shades.forEach(lv => {
+    const [r,g,b] = hslToRgb(h, s, lv);
+    const hex = rgbToHex(r,g,b);
+    const sw = document.createElement('div');
+    sw.style.cssText = `width:44px;height:44px;border-radius:4px;background:${hex};border:1px solid rgba(255,255,255,0.06);cursor:pointer;flex-shrink:0;title="${hex}"`;
+    sw.title = hex;
+    sw.onclick = () => { document.getElementById('hex-in').value = hex; fromHex(hex); };
+    const lbl = document.createElement('div');
+    lbl.style.cssText = `font-family:var(--ff-mono);font-size:0.55rem;color:var(--text-mute);text-align:center;margin-top:0.25rem;`;
+    lbl.textContent = lv + '%';
+    const wrap = document.createElement('div');
+    wrap.appendChild(sw); wrap.appendChild(lbl);
+    row.appendChild(wrap);
+  });
+  // complementary
+  const [cr,cg,cb] = hslToRgb((h+180)%360, s, l);
+  const chex = rgbToHex(cr,cg,cb);
+  const sw2 = document.createElement('div');
+  sw2.style.cssText = `width:44px;height:44px;border-radius:4px;background:${chex};border:2px dashed rgba(255,255,255,0.1);cursor:pointer;flex-shrink:0;`;
+  sw2.title = chex + ' (complement)';
+  sw2.onclick = () => { document.getElementById('hex-in').value = chex; fromHex(chex); };
+  const lbl2 = document.createElement('div');
+  lbl2.style.cssText = `font-family:var(--ff-mono);font-size:0.55rem;color:var(--text-mute);text-align:center;margin-top:0.25rem;`;
+  lbl2.textContent = 'compl.';
+  const wrap2 = document.createElement('div'); wrap2.appendChild(sw2); wrap2.appendChild(lbl2);
+  row.appendChild(wrap2);
+}
+
+// init color
+fromHex('#c4a882');
+
+// ── BPM TAP ───────────────────────────────────────
+let taps = [], tapTimer = null;
+function tap() {
+  const now = performance.now();
+  if (tapTimer) clearTimeout(tapTimer);
+  tapTimer = setTimeout(resetTap, 3000);
+
+  taps.push(now);
+  if (taps.length < 2) { document.getElementById('bpm-display').textContent = '—'; return; }
+
+  const intervals = [];
+  for (let i = 1; i < taps.length; i++) intervals.push(taps[i] - taps[i-1]);
+  const avg = intervals.reduce((a,b) => a+b, 0) / intervals.length;
+  const bpm = Math.round(60000 / avg);
+  document.getElementById('bpm-display').textContent = bpm;
+}
+function resetTap() {
+  taps = [];
+  if (tapTimer) clearTimeout(tapTimer);
+  document.getElementById('bpm-display').textContent = '—';
+}
+
+// ── BEAT TIME ─────────────────────────────────────
+function updateBeatTime() {
+  const bpm   = +document.getElementById('conv-bpm').value || 120;
+  const beats = +document.getElementById('conv-beats').value || 4;
+  const note  = +document.getElementById('conv-note').value || 4;
+  const msPerBeat = 60000 / bpm;
+  const msPerNote = msPerBeat * (4 / note);
+  const totalMs   = msPerNote * beats;
+  const secs = (totalMs / 1000).toFixed(3);
+  const mins  = Math.floor(totalMs / 60000);
+  const rem   = ((totalMs % 60000) / 1000).toFixed(2);
+  setOutput('beat-time-out', `${totalMs.toFixed(1)} ms   ·   ${secs}s   ·   ${mins}:${String(rem).padStart(5,'0')}`);
+}
+updateBeatTime();
+
+// ── NOTE / FREQ ───────────────────────────────────
+const NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+const ENHARMONIC  = {'Db':'C#','Eb':'D#','Fb':'E','Gb':'F#','Ab':'G#','Bb':'A#','Cb':'B'};
+
+function freqToNote() {
+  const freq = +document.getElementById('freq-in').value;
+  if (!freq || freq <= 0) return;
+  const semitones = 12 * Math.log2(freq / 440);
+  const midi = Math.round(semitones) + 69;
+  const octave = Math.floor(midi / 12) - 1;
+  const noteIdx = ((midi % 12) + 12) % 12;
+  const noteName = NOTE_NAMES[noteIdx] + octave;
+  const exactFreq = 440 * Math.pow(2, (midi - 69) / 12);
+  const cents = Math.round(1200 * Math.log2(freq / exactFreq));
+  const centsStr = cents === 0 ? 'in tune' : (cents > 0 ? `+${cents}¢ sharp` : `${cents}¢ flat`);
+  setOutput('note-out', `${noteName}   ·   ${exactFreq.toFixed(2)} Hz (exact)   ·   ${centsStr}`);
+}
+freqToNote();
+
+function noteToFreq() {
+  let raw = document.getElementById('note-in').value.trim();
+  // resolve enharmonic
+  for (const [k,v] of Object.entries(ENHARMONIC)) raw = raw.replace(k, v);
+  const match = raw.match(/^([A-G]#?)(\d)$/);
+  if (!match) { setOutput('freq-out', 'invalid note (e.g. A4, C#3, Bb5)'); return; }
+  const noteIdx = NOTE_NAMES.indexOf(match[1]);
+  const octave  = parseInt(match[2]);
+  const midi = noteIdx + (octave + 1) * 12;
+  const freq = 440 * Math.pow(2, (midi - 69) / 12);
+  setOutput('freq-out', `${freq.toFixed(4)} Hz`);
+}
+noteToFreq();
+
+// ── DELAY TIMES ───────────────────────────────────
+function calcDelays() {
+  const bpm = +document.getElementById('delay-bpm').value || 120;
+  const msPerBeat = 60000 / bpm;
+  const notes = [
+    ['whole',     1],   ['half',      0.5],
+    ['quarter',   0.25],['dotted 8th',0.375/0.5],
+    ['eighth',    0.125],['triplet',  0.25/3*2],
+    ['sixteenth', 0.0625],
+  ];
+  // recalc properly
+  const rows = [
+    { n: 'whole',      f: 1     },
+    { n: 'half',       f: 0.5   },
+    { n: 'dotted ¼',   f: 0.375 },
+    { n: 'quarter',    f: 0.25  },
+    { n: 'triplet',    f: 1/6   },
+    { n: 'dotted ⅛',   f: 3/16  },
+    { n: 'eighth',     f: 0.125 },
+    { n: 'sixteenth',  f: 0.0625},
+  ];
+  const el = document.getElementById('delay-table');
+  el.innerHTML = rows.map(r => {
+    const ms = (msPerBeat * 4 * r.f).toFixed(1);
+    return `<div style="display:flex;justify-content:space-between;padding:0.35rem 0;border-bottom:1px solid var(--border);font-size:0.78rem;">
+      <span style="color:var(--text-dim)">${r.n}</span>
+      <span style="color:var(--accent)">${ms} ms</span>
+    </div>`;
+  }).join('');
+}
+calcDelays();
+document.getElementById('delay-bpm').addEventListener('input', calcDelays);
+</script>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>hello — sipbuu</title>
+  <meta name="description" content="test of the blog system" />
+  <link rel="stylesheet" href="../../assets/css/style.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">sipbuu<span class="cursor-blink"></span></a>
+    <ul class="nav-links">
+      <li><a href="/">home</a></li>
+      <li><a href="/projects">projects</a></li>
+      <li><a href="/music">music</a></li>
+      <li><a href="/blog">blog</a></li>
+      <li><a href="https://github.com/sipbuu" target="_blank" rel="noopener">github ↗</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="site-wrapper">
+  <div class="blog-post-header">
+    <a class="back-link" href="/blog">← back to blog</a>
+    <h1 class="blog-post-title">hello</h1>
+    <div class="blog-post-meta">
+      <span>may 2026</span>
+      <span>·</span>
+      <span>~3 min read</span>
+      <span>·</span>
+      <span class="blog-tag" style="display:inline;">personal</span>
+    </div>
+  </div>
+
+  <div class="blog-post-body">
+    <h2>subheading</h2>
+    <p>
+      testing the <strong>features</strong> of the <em>blog</em> to make sure that all features <code>(all)</code> work, and even <a href="https://sipbuu.me" target="_blank" rel="noopener">links</a>
+    </p>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="site-wrapper">
+    <div class="footer-inner">
+      <div class="footer-sig">built by <span>sipbuu</span> · <span id="footer-year"></span></div>
+      <div class="footer-links">
+        <a href="/">home</a>
+        <a href="/projects">projects</a>
+        <a href="/music">music</a>
+        <a href="/blog">blog</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="theme-toggle">
+  <div class="theme-panel" id="theme-panel">
+    <div class="swatch-label" style="font-family:var(--ff-mono);font-size:0.6rem;color:var(--text-mute);margin-bottom:0.2rem;">accent color</div>
+    <div class="theme-swatch">
+      <div class="swatch" data-accent="amber"    style="background:#c4a882;" title="amber"></div>
+      <div class="swatch" data-accent="sage"     style="background:#8fa68e;" title="sage"></div>
+      <div class="swatch" data-accent="lavender" style="background:#9b8bb0;" title="lavender"></div>
+      <div class="swatch" data-accent="rose"     style="background:#b08b8b;" title="rose"></div>
+      <div class="swatch" data-accent="slate"    style="background:#8ba4b0;" title="slate"></div>
+    </div>
+  </div>
+  <button class="theme-btn" id="theme-toggle-btn">◈ theme</button>
+</div>
+
+<script src="../../assets/js/main.js"></script>
+<script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
+</body>
+</html>

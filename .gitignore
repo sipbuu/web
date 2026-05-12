@@ -1,6 +1,6 @@
-# Ignore helper and local files
 GUIDE.md
 .DS_Store
 Thumbs.db
 node_modules/
 *.log
+dev/

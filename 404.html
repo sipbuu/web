@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404</title>
+  <link rel="stylesheet" href="assets/css/style.css" />
+  <style>
+    @keyframes glitch {
+      0%, 100% { transform: translate(0); }
+      20% { transform: translate(-2px, 1px); }
+      40% { transform: translate(2px, -1px); }
+      60% { transform: translate(-1px, 2px); }
+      80% { transform: translate(1px, -2px); }
+    }
+    .glitch {
+      animation: glitch 3.5s ease-in-out infinite;
+      display: inline-block;
+    }
+    .lost-code::before {
+      content: '404';
+      position: absolute;
+      inset: 0;
+      color: var(--accent2);
+      clip-path: inset(45% 0 0 0);
+      opacity: 0.4;
+      transform: translate(-2px, 0);
+      animation: glitch 4s ease-in-out infinite reverse;
+    }
+  </style>
+</head>
+<body>
+
+<nav class="site-nav">
+  <div class="nav-inner">
+    <a href="/" class="nav-logo">sipbuu<span class="cursor-blink"></span></a>
+    <ul class="nav-links">
+      <li><a href="/">home</a></li>
+      <li><a href="/projects">projects</a></li>
+      <li><a href="/music">music</a></li>
+      <li><a href="/blog">blog</a></li>
+      <li><a href="https://github.com/sipbuu" target="_blank" rel="noopener">github ↗</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="site-wrapper">
+  <div class="lost-page">
+
+    <div class="lost-code glitch">404</div>
+
+    <h1 class="lost-title">this page doesn't exist</h1>
+    <p class="lost-sub">
+      what are you doing here?<br />
+    </p>
+
+    <div style="display:flex; gap:0.75rem; justify-content:center; flex-wrap:wrap;">
+      <a class="btn" href="/">← go home</a>
+      <a class="btn" href="/projects">see projects</a>
+    </div>
+
+    <p style="margin-top:3rem; font-family:var(--ff-mono); font-size:0.65rem; color:var(--text-mute);">
+      error 404 · page not found · <span id="ts"></span>
+    </p>
+
+  </div>
+</main>
+
+<div class="theme-toggle">
+  <div class="theme-panel" id="theme-panel">
+    <div class="swatch-label" style="font-family:var(--ff-mono);font-size:0.6rem;color:var(--text-mute);margin-bottom:0.2rem;">accent color</div>
+    <div class="theme-swatch">
+      <div class="swatch" data-accent="amber"    style="background:#c4a882;" title="amber"></div>
+      <div class="swatch" data-accent="sage"     style="background:#8fa68e;" title="sage"></div>
+      <div class="swatch" data-accent="lavender" style="background:#9b8bb0;" title="lavender"></div>
+      <div class="swatch" data-accent="rose"     style="background:#b08b8b;" title="rose"></div>
+      <div class="swatch" data-accent="slate"    style="background:#8ba4b0;" title="slate"></div>
+    </div>
+  </div>
+  <button class="theme-btn" id="theme-toggle-btn">◈ theme</button>
+</div>
+
+<script src="assets/js/main.js"></script>
+<script>
+  document.getElementById('ts').textContent = new Date().toLocaleTimeString();
+</script>
+</body>
+</html>
