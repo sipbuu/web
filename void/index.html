@@ -107,38 +107,67 @@
 
     #status:hover { color: #444; }
 
-    #upload-btn {
+    #controls {
       position: fixed;
       top: 1.5rem;
       left: 1.5rem;
+      display: flex;
+      gap: 0.45rem;
+      align-items: center;
+      z-index: 9999;
+    }
+
+    .control-btn {
       width: 32px;
       height: 32px;
       border: 1px solid #171717;
-      border-radius: 50%;
+      border-radius: 999px;
+      background: none;
       color: #222;
+      cursor: none;
       font-family: "Courier New", monospace;
-      font-size: 1.2rem;
+      font-size: 0.8rem;
       line-height: 1;
-      z-index: 9999;
       transition: color 0.3s, border-color 0.3s, transform 0.2s;
     }
 
-    #upload-btn:hover {
+    #upload-btn {
+      font-size: 1.2rem;
+    }
+
+    #clear-btn {
+      width: auto;
+      padding: 0 0.8rem;
+      letter-spacing: 0.08em;
+    }
+
+    .control-btn:hover {
       color: #555;
       border-color: #444;
+    }
+
+    #upload-btn:hover,
+    #music-btn:hover {
       transform: rotate(90deg);
     }
 
-    #image-upload { display: none; }
+    #image-upload,
+    #music-upload { display: none; }
   </style>
 </head>
 <body>
   <div id="cursor"></div>
   <canvas id="particles"></canvas>
-  <button id="upload-btn" type="button" aria-label="Upload image">+</button>
+  <div id="controls">
+    <button id="upload-btn" class="control-btn" type="button" aria-label="Upload image">+</button>
+    <button id="music-btn" class="control-btn" type="button" aria-label="Upload music">♪</button>
+    <button id="clear-btn" class="control-btn" type="button">clear</button>
+  </div>
   <input id="image-upload" type="file" accept="image/*" />
+  <input id="music-upload" type="file" accept="audio/*" />
   <div id="status">
     <div>things exploded: <span id="exploded-count">0</span></div>
+    <div>currently playing: <span id="song-name">void.mp3</span></div>
   </div>
   <a href="/" id="escape">&larr; leave</a>
 
@@ -160,11 +189,16 @@
     const canvas = document.getElementById("particles");
     const ctx = canvas.getContext("2d");
     const uploadBtn = document.getElementById("upload-btn");
+    const musicBtn = document.getElementById("music-btn");
+    const clearBtn = document.getElementById("clear-btn");
     const imageUpload = document.getElementById("image-upload");
+    const musicUpload = document.getElementById("music-upload");
     const explodedCountEl = document.getElementById("exploded-count");
+    const songNameEl = document.getElementById("song-name");
     const music = new Audio(MUSIC_SRC);
     music.loop = true;
     music.volume = 0.32;
+    songNameEl.textContent = MUSIC_NAME;
 
     function wakeMusic() {
       music.play().catch(() => {});
@@ -244,6 +278,11 @@
     function bumpExplodedCount() {
       explodedCount += 1;
       explodedCountEl.textContent = String(explodedCount);
+    }
+
+    function resetExplodedCount() {
+      explodedCount = 0;
+      explodedCountEl.textContent = "0";
     }
 
     class Floater {
@@ -406,6 +445,18 @@
       }
     }
 
+    function clearVoid() {
+      while (floaters.length) {
+        const floater = floaters.pop();
+        floater.el.remove();
+      }
+
+      particles = [];
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      document.querySelectorAll(".explosion").forEach(explosion => explosion.remove());
+      resetExplodedCount();
+    }
+
     function loop() {
       if (!animRunning) return;
       drawParticles();
@@ -432,6 +483,15 @@
       imageUpload.click();
     });
 
+    musicBtn.addEventListener("click", () => {
+      musicUpload.click();
+    });
+
+    clearBtn.addEventListener("click", () => {
+      wakeMusic();
+      clearVoid();
+    });
+
     imageUpload.addEventListener("change", () => {
       const file = imageUpload.files && imageUpload.files[0];
       if (!file) return;
@@ -440,6 +500,20 @@
       IMAGES.push(src);
       spawnImageBatch(src);
       imageUpload.value = "";
+    });
+
+    musicUpload.addEventListener("change", () => {
+      const file = musicUpload.files && musicUpload.files[0];
+      if (!file) return;
+
+      const src = URL.createObjectURL(file);
+      music.pause();
+      music.src = src;
+      music.loop = true;
+      music.currentTime = 0;
+      songNameEl.textContent = file.name;
+      wakeMusic();
+      musicUpload.value = "";
     });
 
     resizeCanvas();
